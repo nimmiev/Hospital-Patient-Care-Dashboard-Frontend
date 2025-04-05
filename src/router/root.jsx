@@ -19,6 +19,8 @@ import AddPatient from "../pages/admin/AddPatient";
 import PatientDashboard from "../pages/patient/Dashboard";
 import StaffDashboard from "../pages/staff/Dashboard";
 import DoctorDashboard from "../pages/doctor/Dashboard";
+import Terms from "../pages/user/Terms";
+import Privacy from "../pages/user/Privacy";
 
 export const router = createBrowserRouter([
     {
@@ -28,6 +30,8 @@ export const router = createBrowserRouter([
             { path: "/", element: <Home /> },
             { path: "about", element: <About /> },
             { path: "contact", element: <Contact /> },
+            { path: "terms", element: <Terms />},
+            { path: "privacy", element: <Privacy />},
             { path: "login", element: <Login />},
             { path: "signup", element: <Signup />},
             { path: "error", element: <Error /> },
