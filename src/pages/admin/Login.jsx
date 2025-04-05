@@ -20,6 +20,10 @@ const Login = () => {
       try {
         const res = await axiosInstance.put(api.path, data, { withCredentials: true });
         if (res.data?.data?.role === api.role) {
+          
+          localStorage.setItem("token", res.data.data.token);
+          localStorage.setItem("role", api.role);
+          
           navigate(api.redirect);
           return; // Stop further API calls if login is successful
         }

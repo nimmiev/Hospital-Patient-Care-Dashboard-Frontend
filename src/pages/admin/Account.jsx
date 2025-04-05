@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { axiosInstance } from '../../config/axiosInstance';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import toast CSS
+import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
     const [user, setUser] = useState({
@@ -14,6 +15,8 @@ const Account = () => {
     });
 
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -149,6 +152,10 @@ const Account = () => {
     return (
         <>
             <div className="tabs tabs-box">
+            {/* <button  className="btn btn-secondary mb-4">← Back</button> */}
+
+                <input type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" aria-label="← Back"></input>
+                
                 <input type="radio" name="my_tabs_6" className="tab" aria-label="Profile" />
                 <div className="tab-content bg-base-100 border-base-300 p-6 items-center text-center">
                     <h2 className="text-xl font-semibold mb-4 text-primary">Profile Details</h2>

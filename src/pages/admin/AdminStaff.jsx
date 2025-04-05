@@ -34,6 +34,17 @@ const AdminStaff = () => {
     currentPage * itemsPerPage
   );
 
+    const handleApprove = async (id) => {
+      try {
+        const response = await axiosInstance.put(`/api/admin/staff/approve/${id}`);
+        toast.success("Patient approved successfully!");
+        fetchPatients(); // Refresh the data
+      } catch (error) {
+        toast.error("Error approving patient!");
+        console.error("Error approving patient:", error);
+      }
+    };
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Staff Management List</h2>

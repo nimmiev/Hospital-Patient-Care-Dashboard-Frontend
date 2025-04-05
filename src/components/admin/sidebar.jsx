@@ -10,7 +10,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       `}
     >
       <div className="flex justify-between items-center p-4 border-b">
-        <h2 className="text-lg font-semibold">HEALTHCARE</h2>
+        <h2 className="text-lg font-semibold"><Link to="/admin">HEALTHCARE</Link></h2>
         <X className="h-6 w-6 cursor-pointer" onClick={() => setIsOpen(false)} />
       </div>
 

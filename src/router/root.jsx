@@ -13,8 +13,12 @@ import AdminStaff from "../pages/admin/AdminStaff";
 import BloodbankList from "../pages/admin/BloodbankList";
 import AppoinmentList from "../pages/admin/AppoinmentList";
 import Account from "../pages/admin/Account";
-import AccountSettings from "../pages/admin/AccountSettings";
 import Error from "../pages/admin/error";
+import PatientDetails from "../pages/admin/PatientDetails";
+import AddPatient from "../pages/admin/AddPatient";
+import PatientDashboard from "../pages/patient/Dashboard";
+import StaffDashboard from "../pages/staff/Dashboard";
+import DoctorDashboard from "../pages/doctor/Dashboard";
 
 export const router = createBrowserRouter([
     {
@@ -26,7 +30,10 @@ export const router = createBrowserRouter([
             { path: "contact", element: <Contact /> },
             { path: "login", element: <Login />},
             { path: "signup", element: <Signup />},
-            { path: "error", element: <Error /> }
+            { path: "error", element: <Error /> },
+            { path: "patient", element: <PatientDashboard />},
+            { path: "staff", element: <StaffDashboard />},
+            { path: "doctor", element: <DoctorDashboard />}
         ]
     },
     {
@@ -40,8 +47,9 @@ export const router = createBrowserRouter([
             { path: "bloodbank", element: <BloodbankList /> },
             { path: "appoinments", element: <AppoinmentList /> },
             { path: "account", element: <Account /> },
-            { path: "settings", element: <AccountSettings /> },
-            { path: "error", element: <Error /> }
+            { path: "error", element: <Error /> },
+            { path: "patient/:id", element: <PatientDetails /> },
+            { path: "patient/add-patient", element: <AddPatient /> }
         ]
     }
 ]);
