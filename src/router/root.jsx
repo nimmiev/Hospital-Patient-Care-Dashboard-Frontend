@@ -63,7 +63,7 @@ export const router = createBrowserRouter([
             { path: "doctor/:id", element: <DoctorDetails /> },
             { path: "staff/:id", element: <StaffDetails /> },
             { path: "bloodbank/:id", element: <UpdateBloodbank />},
-            { path: "bloodbank/addBloodbank", element: <AddBloodbank />},
+            { path: "bloodbank/add-bloodbank", element: <AddBloodbank />},
             { path: "schedule/:id", element: <ScheduleAppoinment />},
             { path: "reschedule/:appoinmentId", element: <RescheduleAppoinment />}
         ]
