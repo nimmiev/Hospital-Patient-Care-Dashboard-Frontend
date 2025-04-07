@@ -27,6 +27,9 @@ import UpdateBloodbank from "../pages/admin/UpdateBloodbank";
 import AddBloodbank from "../pages/admin/AddBloodbank";
 import ScheduleAppoinment from "../pages/admin/AddAppoinment";
 import RescheduleAppoinment from "../pages/admin/RescheduleAppoinment";
+import StaffTasks from "../pages/admin/StaffTaskList";
+import AddTask from "../pages/admin/AddTask";
+import UpdateTask from "../pages/admin/UpdateTask";
 
 export const router = createBrowserRouter([
     {
@@ -65,7 +68,10 @@ export const router = createBrowserRouter([
             { path: "bloodbank/:id", element: <UpdateBloodbank />},
             { path: "bloodbank/add-bloodbank", element: <AddBloodbank />},
             { path: "schedule/:id", element: <ScheduleAppoinment />},
-            { path: "reschedule/:appoinmentId", element: <RescheduleAppoinment />}
+            { path: "reschedule/:appoinmentId", element: <RescheduleAppoinment />},            
+            { path: "task", element: <StaffTasks />},
+            { path: "addTask/:staffId",element: <AddTask />},
+            { path: "editTask/:taskId",element: <UpdateTask />}
         ]
     }
 ]);

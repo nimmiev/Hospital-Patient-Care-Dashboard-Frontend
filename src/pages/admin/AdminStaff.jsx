@@ -117,9 +117,10 @@ const AdminStaff = () => {
                 </td>
                 <td className="p-3 flex space-x-2">
                   <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/staff/${staff._id}`)}>View</button>
-                  <button className="btn btn-sm btn-accent" onClick={() => handleApprove(staff._id)}>Approve</button>
+                  <button className="btn btn-sm btn-success" onClick={() => handleApprove(staff._id)}>Approve</button>
                   <button className="btn btn-sm btn-warning" onClick={() => handleReject(staff._id)}>Reject</button>
                   <button className="btn btn-sm btn-error" onClick={() => setDeleteStaffId(staff._id)}>Delete</button>
+                  <button className="btn btn-sm btn-accent" onClick={() => navigate(`/admin/addTask/${staff._id}`)} >Add Task</button>
                 </td>
               </tr>
             ))}
