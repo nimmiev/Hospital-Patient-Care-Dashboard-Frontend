@@ -1,43 +1,88 @@
-import React, { useState } from "react";
-
-const patientsData = [
-  { id: 1, name: "Cy Ganderton", job: "Quality Control Specialist", color: "Blue" },
-  { id: 2, name: "Hart Hagerty", job: "Desktop Support Technician", color: "Purple" },
-  { id: 3, name: "Brice Swyre", job: "Tax Accountant", color: "Red" },
-  { id: 4, name: "Jane Doe", job: "Nurse", color: "Green" },
-  { id: 5, name: "John Smith", job: "Surgeon", color: "Yellow" },
-  { id: 6, name: "Emily Johnson", job: "Radiologist", color: "Pink" },
-  { id: 7, name: "Daniel Brown", job: "Pharmacist", color: "Orange" },
-  { id: 8, name: "Michael White", job: "Anesthesiologist", color: "Teal" },
-  { id: 9, name: "Cy Ganderton", job: "Quality Control Specialist", color: "Blue" },
-  { id: 10, name: "Hart Hagerty", job: "Desktop Support Technician", color: "Purple" },
-  { id: 11, name: "Brice Swyre", job: "Tax Accountant", color: "Red" },
-  { id: 12, name: "Jane Doe", job: "Nurse", color: "Green" },
-  { id: 13, name: "John Smith", job: "Surgeon", color: "Yellow" },
-  { id: 14, name: "Emily Johnson", job: "Radiologist", color: "Pink" },
-  { id: 15, name: "Daniel Brown", job: "Pharmacist", color: "Orange" },
-  { id: 16, name: "Michael White", job: "Anesthesiologist", color: "Teal" },
-  { id: 17, name: "John Smith", job: "Surgeon", color: "Yellow" },
-  { id: 18, name: "Emily Johnson", job: "Radiologist", color: "Pink" },
-  { id: 19, name: "Daniel Brown", job: "Pharmacist", color: "Orange" },
-  { id: 20, name: "Michael White", job: "Anesthesiologist", color: "Teal" },
-];
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../config/axiosInstance";
+import { ToastContainer,toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminDoctors = () => {
+
+  const [doctors, setDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteDoctorId, setDeleteDoctorId] = useState(null);
   const itemsPerPage = 10;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      fetchDoctors();
+    }, []);
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await axiosInstance.get("/api/admin/doctors");
+      // console.log("Doctors Data:", response.data.data);
+      setDoctors(response.data.data);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      const response = await axiosInstance.put(`/api/admin/doctorApproval/${id}`);
+      toast.success("Doctor approved successfully!");
+      fetchDoctors(); // Refresh the data
+    } catch (error) {
+      toast.error("Error approving doctor!");
+      console.error("Error approving doctor:", error);
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const response = await axiosInstance.put(`/api/admin/doctorReject/${id}`);
+      toast.success("Doctor rejected successfully!");
+      fetchDoctors(); // Refresh the data
+    } catch (error) {
+      toast.error("Error rejecting doctor!");
+      console.error("Error rejecting doctor:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!deleteDoctorId) return;
+    try {
+      await axiosInstance.delete(`/api/admin/doctor/${deleteDoctorId}`);
+      toast.success("Doctor deleted successfully!");
+      fetchDoctors();
+    } catch (error) {
+      toast.error("Error deleting doctor!");
+      console.error("Error deleting doctor:", error);
+    } finally {
+      setDeleteDoctorId(null); // Close modal
+    }
+  };
 
   // Pagination logic
-  const totalPages = Math.ceil(patientsData.length / itemsPerPage);
-  const paginatedData = patientsData.slice(
+  const totalPages = Math.ceil(doctors.length / itemsPerPage);
+  const paginatedData = doctors.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Doctors Management List</h2>
+      <div className="flex justify-between items-center mb-4">
+        {/* Back navigating button */}
+        <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
+          
+        <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Doctors Management List</h2>
 
+        <div></div>
+
+        {/* <button className="btn btn-primary" onClick={() => navigate("/admin/doctor/add-doctor")}>
+            + Add Doctor
+        </button> */}
+      </div>
       {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}
       <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">
         <table className="table w-full">
@@ -45,20 +90,32 @@ const AdminDoctors = () => {
             <tr>
               <th className="p-3">#</th>
               <th className="p-3">Name</th>
-              <th className="p-3">Job Title</th>
-              <th className="p-3">Favorite Color</th>
+              <th className="p-3">Email</th>
+              <th className="p-3">Phone</th>
+              <th className="p-3">Status</th>
+              <th className="p-3">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-base-300">
-            {paginatedData.map((patient, index) => (
+            {paginatedData.map((doctor, index) => (
               <tr
-                key={patient.id}
+                key={doctor._id}
                 className="hover:bg-base-200 transition duration-200"
               >
                 <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                <td className="p-3">{patient.name}</td>
-                <td className="p-3">{patient.job}</td>
-                <td className="p-3">{patient.color}</td>
+                <td className="p-3">{doctor.name}</td>
+                <td className="p-3">{doctor.email}</td>
+                <td className="p-3">{doctor.phone}</td>
+                <td className={`p-3 ${ doctor.approved === true ? 'text-green-600' : doctor.approved === false ? 'text-red-500' : 'text-yellow-500' }`}> {
+                    doctor.approved === true ? "Accepted" :
+                    doctor.approved === false ? "Rejected" : "Requested" }
+                </td>
+                <td className="p-3 flex space-x-2">
+                  <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/doctor/${doctor._id}`)}>View</button>                  
+                  <button className="btn btn-sm btn-success" onClick={() => handleApprove(doctor._id)}>Approve</button>                  
+                  <button className="btn btn-sm btn-warning" onClick={() => handleReject(doctor._id)}>Reject</button>                  
+                  <button className="btn btn-sm btn-error" onClick={() => setDeleteDoctorId(doctor._id)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -95,6 +152,24 @@ const AdminDoctors = () => {
           </button>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteDoctorId && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Confirm Delete</h3>
+            <p className="py-4">Are you sure you want to delete this doctor?</p>
+            <div className="modal-action">
+              <button className="btn btn-error" onClick={handleDelete}>Yes, Delete</button>
+              <button className="btn" onClick={() => setDeleteDoctorId(null)}>Cancel</button>
+            </div>
+          </div>
+          {/* Click outside to close */}
+          <div className="modal-backdrop" onClick={() => setDeleteDoctorId(null)}></div>
+        </div>
+      )}
+
+      <ToastContainer />
     </div>
   );
 };

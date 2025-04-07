@@ -20,7 +20,7 @@ const AdminPatients = () => {
   const fetchPatients = async () => {
     try {
       const response = await axiosInstance.get("/api/admin/patient");
-      console.log("Patient Data:", response.data.data);
+      // console.log("Patient Data:", response.data.data);
       setPatients(response.data.data);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -28,17 +28,6 @@ const AdminPatients = () => {
   };
 
   const handleDelete = async (id) => {
-    // if (window.confirm("Are you sure you want to delete this patient?")) {
-    //   try {
-    //     await axiosInstance.delete(`/api/admin/patient/${id}`);
-    //     // alert("Patient deleted successfully!");
-    //     toast.success("Patient deleted successfully!")
-    //     fetchPatients(); // Refresh the list
-    //   } catch (error) {
-    //     toast.error("Error deleting patient!");
-    //     console.error("Error deleting patient:", error);
-    //   }
-    // }
     if (!deletePatientId) return;
     try {
       await axiosInstance.delete(`/api/admin/patient/${deletePatientId}`);
@@ -57,7 +46,7 @@ const AdminPatients = () => {
       const response = await axiosInstance.post("/api/admin/appointment", { patientId: id });
       // alert("Appointment added successfully!");
       toast.success("Appointment added successfully!");
-      console.log("Appointment Data:", response.data);
+      // console.log("Appointment Data:", response.data);
     } catch (error) {
       toast.error("Error adding appointment!");
       console.error("Error adding appointment:", error);
@@ -74,7 +63,11 @@ const AdminPatients = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
+        {/* Back navigating button */}
+        <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
+                
         <h2 className="text-2xl font-semibold text-primary">Patient Management List</h2>
+        
         <button className="btn btn-primary" onClick={() => navigate("/admin/patient/add-patient")}>
           + Add Patient
         </button>
@@ -100,9 +93,8 @@ const AdminPatients = () => {
                 <td className="p-3">{patient.phone}</td>
                 <td className="p-3 flex space-x-2">
                   <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/patient/${patient._id}`)}>View</button>
-                  {/* <button className="btn btn-sm btn-accent" onClick={() => handleApprove(patient._id)}>Approve</button> */}
                   <button className="btn btn-sm btn-error" onClick={() => setDeletePatientId(patient._id)}>Delete</button>
-                  <button className="btn btn-sm btn-success" onClick={() => handleAddAppointment(patient._id)}>Add Appointment</button>
+                  <button className="btn btn-sm btn-success" onClick={() => navigate(`/admin/schedule/${patient._id}`)}>Add Appointment</button>
                 </td>
               </tr>
             ))}

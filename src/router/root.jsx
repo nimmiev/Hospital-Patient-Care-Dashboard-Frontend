@@ -21,6 +21,12 @@ import StaffDashboard from "../pages/staff/Dashboard";
 import DoctorDashboard from "../pages/doctor/Dashboard";
 import Terms from "../pages/user/Terms";
 import Privacy from "../pages/user/Privacy";
+import DoctorDetails from "../pages/admin/DoctorDetails";
+import StaffDetails from "../pages/admin/StaffDetails";
+import UpdateBloodbank from "../pages/admin/UpdateBloodbank";
+import AddBloodbank from "../pages/admin/AddBloodbank";
+import ScheduleAppoinment from "../pages/admin/AddAppoinment";
+import RescheduleAppoinment from "../pages/admin/RescheduleAppoinment";
 
 export const router = createBrowserRouter([
     {
@@ -53,7 +59,13 @@ export const router = createBrowserRouter([
             { path: "account", element: <Account /> },
             { path: "error", element: <Error /> },
             { path: "patient/:id", element: <PatientDetails /> },
-            { path: "patient/add-patient", element: <AddPatient /> }
+            { path: "patient/add-patient", element: <AddPatient /> },
+            { path: "doctor/:id", element: <DoctorDetails /> },
+            { path: "staff/:id", element: <StaffDetails /> },
+            { path: "bloodbank/:id", element: <UpdateBloodbank />},
+            { path: "bloodbank/addBloodbank", element: <AddBloodbank />},
+            { path: "schedule/:id", element: <ScheduleAppoinment />},
+            { path: "reschedule/:appoinmentId", element: <RescheduleAppoinment />}
         ]
     }
 ]);

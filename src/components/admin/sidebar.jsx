@@ -30,12 +30,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <li>
           <Link to="/admin/bloodbank" className="hover:bg-primary hover:text-white">BloodBank Management</Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/admin/privacy" className="hover:bg-primary hover:text-white">Privacy Policy</Link>
         </li>
         <li>
           <Link to="/admin/terms" className="hover:bg-primary hover:text-white">Documentations</Link>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

@@ -57,7 +57,7 @@ const StatsDashboard = () => {
         <FaUserInjured className="text-4xl text-primary" />
         <div className="stat-title">Patients</div>
         <div className="stat-value text-primary">{stats.patients}</div>
-        <div className="stat-desc">From Jan 1st - Feb 1st</div>
+        {/* <div className="stat-desc">From Jan 1st - Feb 1st</div> */}
       </div>
 
       <div className="bg-base-100 shadow-lg rounded-2xl p-6 border border-base-content/10 flex flex-col items-center">

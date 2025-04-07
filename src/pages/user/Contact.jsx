@@ -1,6 +1,43 @@
-import React from 'react'
+import React, { useState} from 'react'
+import { axiosInstance } from '../../config/axiosInstance';
 
 const Contact = () => {
+
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
+    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    return newErrors;
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post('/api/contact', formData);
+      setSuccessMessage(response.data.message);
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      setSuccessMessage('Something went wrong. Please try again later.');
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-white px-6 md:px-16 py-12">
       <div className="max-w-4xl w-full">
@@ -34,7 +71,7 @@ const Contact = () => {
         {/* Contact Form */}
         <div className="mt-12 bg-gray-100 p-8 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-gray-800 text-center mb-6">Send Us a Message</h3>
-          <form className="space-y-4">
+          {/* <form className="space-y-4">
             <div>
               <label className="block text-gray-700 font-medium">Full Name</label>
               <input 
@@ -68,6 +105,57 @@ const Contact = () => {
             <div className="text-center">
               <button 
                 type="submit" 
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+              >
+                Send Message
+              </button>
+            </div>
+          </form> */}
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-gray-700 font-medium">Full Name</label>
+              <input
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                className={`w-full p-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                placeholder="Enter your name"
+              />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">Email</label>
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                placeholder="Enter your email"
+              />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">Message</label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                className={`w-full p-3 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                rows="4"
+                placeholder="Type your message here..."
+              ></textarea>
+              {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
+            </div>
+
+            {successMessage && <p className="text-green-600 text-center">{successMessage}</p>}
+
+            <div className="text-center">
+              <button
+                type="submit"
                 className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
               >
                 Send Message

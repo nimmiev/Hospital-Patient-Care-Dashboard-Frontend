@@ -20,6 +20,12 @@ const Header = ({ setIsOpen }) => {
   const handleLogout = async () => {
     try {
       await axiosInstance.put("/api/admin/logout"); // Call logout API
+
+      // Clear localStorage/sessionStorage values
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.setItem("theme", "light"); // Reset theme to default
+
       navigate("/"); // Redirect to home page after logout
     } catch (error) {
       console.error("Logout failed:", error.message);
