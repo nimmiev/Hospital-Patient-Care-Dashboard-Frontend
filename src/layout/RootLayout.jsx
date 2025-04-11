@@ -3,6 +3,7 @@ import Header from '../components/user/header';
 import DashbordHeader from '../components/user/DashbordHeader';
 import Footer from '../components/user/footer';
 import { Outlet, useLocation } from 'react-router-dom';
+import Sidebar from '../components/user/Sidebar';
 
 const RootLayout = () => {
   const location = useLocation();
@@ -13,13 +14,30 @@ const RootLayout = () => {
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
 
+  // Show Sidebar only for exact dashboard paths
+  const showSidebar = ["/patient", "/staff", "/doctor", "/patient/profile", "/patient/settings",
+    "/patient/appoinments", "/patient/bloodbanks", "/doctor/profile", "/doctor/settings", "/doctor/appoinments"].includes(location.pathname);
+
   return (
-    <div>
-      {/* Show DashbordHeader only if user is a dashboard user and not on login/signup */}
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
       {isDashboardUser && !isAuthPage ? <DashbordHeader /> : <Header />}
-      
-      <Outlet />
-      
+
+      {/* Main content area with sidebar and content */}
+      <div className="flex flex-1">
+        {showSidebar && (
+          <div className="w-64 bg-gray-100">
+            <Sidebar />
+          </div>
+        )}
+
+        {/* Main outlet area */}
+        <main className="flex-1 p-4">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

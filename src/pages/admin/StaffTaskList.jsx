@@ -20,7 +20,7 @@ const StaffTaskList = () => {
   const fetchTasks = async () => {
     try {
       const response = await axiosInstance.get("/api/admin/task");
-      console.log("Tasks Data:", response.data.data);
+      // console.log("Tasks Data:", response.data.data);
       setTasks(response.data.data);
     } catch (error) {
       console.error("Error fetching Task:", error);

@@ -1,35 +1,42 @@
-import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "../layout/RootLayout";
-import AdminLayout from "../layout/AdminLayout";
-import Home from "../pages/user/Home";
-import About from "../pages/user/About";
-import Contact from "../pages/user/Contact";
-import Login from "../pages/admin/Login";
-import Signup from "../pages/admin/Signup";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import AdminPatients from "../pages/admin/AdminPatients";
-import AdminDoctors from "../pages/admin/AdminDoctors";
-import AdminStaff from "../pages/admin/AdminStaff";
-import BloodbankList from "../pages/admin/BloodbankList";
-import AppoinmentList from "../pages/admin/AppoinmentList";
-import Account from "../pages/admin/Account";
-import Error from "../pages/admin/error";
-import PatientDetails from "../pages/admin/PatientDetails";
-import AddPatient from "../pages/admin/AddPatient";
-import PatientDashboard from "../pages/patient/Dashboard";
-import StaffDashboard from "../pages/staff/Dashboard";
-import DoctorDashboard from "../pages/doctor/Dashboard";
-import Terms from "../pages/user/Terms";
-import Privacy from "../pages/user/Privacy";
-import DoctorDetails from "../pages/admin/DoctorDetails";
-import StaffDetails from "../pages/admin/StaffDetails";
-import UpdateBloodbank from "../pages/admin/UpdateBloodbank";
-import AddBloodbank from "../pages/admin/AddBloodbank";
-import ScheduleAppoinment from "../pages/admin/AddAppoinment";
-import RescheduleAppoinment from "../pages/admin/RescheduleAppoinment";
-import StaffTasks from "../pages/admin/StaffTaskList";
-import AddTask from "../pages/admin/AddTask";
-import UpdateTask from "../pages/admin/UpdateTask";
+import { createBrowserRouter } from "react-router-dom"
+import RootLayout from "../layout/RootLayout"
+import AdminLayout from "../layout/AdminLayout"
+import Home from "../pages/user/Home"
+import About from "../pages/user/About"
+import Contact from "../pages/user/Contact"
+import Login from "../pages/admin/Login"
+import Signup from "../pages/admin/Signup"
+import AdminDashboard from "../pages/admin/AdminDashboard"
+import AdminPatients from "../pages/admin/AdminPatients"
+import AdminDoctors from "../pages/admin/AdminDoctors"
+import AdminStaff from "../pages/admin/AdminStaff"
+import BloodbankList from "../pages/admin/BloodbankList"
+import AppoinmentList from "../pages/admin/AppoinmentList"
+import Account from "../pages/admin/Account"
+import Error from "../pages/error"
+import PatientDetails from "../pages/admin/PatientDetails"
+import AddPatient from "../pages/admin/AddPatient"
+import PatientDashboard from "../pages/patient/Dashboard"
+import StaffDashboard from "../pages/staff/Dashboard"
+import DoctorDashboard from "../pages/doctor/Dashboard"
+import Terms from "../pages/user/Terms"
+import Privacy from "../pages/user/Privacy"
+import DoctorDetails from "../pages/admin/DoctorDetails"
+import StaffDetails from "../pages/admin/StaffDetails"
+import UpdateBloodbank from "../pages/admin/UpdateBloodbank"
+import AddBloodbank from "../pages/admin/AddBloodbank"
+import ScheduleAppoinment from "../pages/admin/AddAppoinment"
+import RescheduleAppoinment from "../pages/admin/RescheduleAppoinment"
+import StaffTasks from "../pages/admin/StaffTaskList"
+import AddTask from "../pages/admin/AddTask"
+import UpdateTask from "../pages/admin/UpdateTask"
+import PatientProfile from "../pages/patient/Profile"
+import PatientStetting from "../pages/patient/Settings"
+import PatientAppoinment from "../pages/patient/AppoinmentList"
+import PatientBloodbank from "../pages/patient/BloodbankList"
+import DoctorProfile from "../pages/doctor/Profile"
+import DoctorStetting from "../pages/doctor/Settings"
+import DoctorAppoinment from "../pages/doctor/AppoinmentList"
 
 export const router = createBrowserRouter([
     {
@@ -46,7 +53,14 @@ export const router = createBrowserRouter([
             { path: "error", element: <Error /> },
             { path: "patient", element: <PatientDashboard />},
             { path: "staff", element: <StaffDashboard />},
-            { path: "doctor", element: <DoctorDashboard />}
+            { path: "doctor", element: <DoctorDashboard />},
+            { path: "patient/profile", element: < PatientProfile/>},
+            { path: "patient/settings", element: < PatientStetting/>},
+            { path: "patient/appoinments", element: < PatientAppoinment/>},
+            { path: "patient/bloodbanks", element: < PatientBloodbank/>},
+            { path: "doctor/profile", element: < DoctorProfile/>},
+            { path: "doctor/settings", element: < DoctorStetting/>},
+            { path: "doctor/appoinments", element: < DoctorAppoinment/>}
         ]
     },
     {

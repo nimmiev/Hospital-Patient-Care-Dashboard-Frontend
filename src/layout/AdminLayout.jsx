@@ -27,7 +27,6 @@ const AdminLayout = () => {
         } w-full min-h-screen overflow-hidden`}
       >
         <Header setIsOpen={setIsSidebarOpen} />
-
         {/* Content Section */}
         <div className="flex-1 overflow-auto p-4">
           <Outlet />
