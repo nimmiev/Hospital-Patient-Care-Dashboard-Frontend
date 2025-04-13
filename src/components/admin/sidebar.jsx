@@ -33,6 +33,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <li>
           <Link to="/admin/task" className="hover:bg-primary hover:text-white">Staff - Task Management</Link>
         </li>
+        <li>
+          <Link to="/admin/instruction" className="hover:bg-primary hover:text-white">General Instructions</Link>
+        </li>
         {/* <li>
           <Link to="/admin/privacy" className="hover:bg-primary hover:text-white">Privacy Policy</Link>
         </li>

@@ -105,7 +105,7 @@ const AppoinmentList = () => {
                                         {appoinment.status}
                                     </span>
                                 </td>
-                                <td className="p-3">{appoinment.doctorName}</td>
+                                <td className="p-3">{appoinment.doctorId.name}</td>
                                 <td className="p-3">{appoinment.consultationNotes}</td>
                                 <td className="p-3 flex space-x-2">
                                     {/* <button className="btn btn-sm btn-warning" onClick={() />=> setRequestAppoinmentId(appoinment._id)} disabled={isScheduled}>Request</button> */}

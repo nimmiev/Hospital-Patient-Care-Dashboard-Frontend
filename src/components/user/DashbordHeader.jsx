@@ -44,7 +44,7 @@ const DashbordHeader = () => {
      const handleLogout = async () => {
         try {
             const role = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-console.log(role)
+// console.log(role)
           let apiUrl = "/api/logout"; // default value
       
           // Set API endpoint based on role
@@ -84,7 +84,7 @@ console.log(role)
 
                     {/* Profile/Logout */}
                     <div className="hidden lg:flex items-center space-x-4">
-                        <Link to="/patient">
+                    <Link to={`/${userData?.role?.toLowerCase() || ""}`}>
                             <div className="avatar">
                                 <div className="w-8 rounded-full">
                                     <img src={userData.profilepic} />

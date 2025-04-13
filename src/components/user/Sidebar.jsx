@@ -69,6 +69,11 @@ const Sidebar = () => {
             <SidebarLink icon={<Droplet size={20} />} label="Bloodbanks" />
           </Link>
         )}
+        {userData.role.toLowerCase() == "doctor" && (
+          <Link to={`/${userData.role.toLowerCase()}/patients`}>
+            <SidebarLink icon={<User size={20} />} label="Patients" />
+          </Link>
+        )}
         <Link to={`/${userData.role.toLowerCase()}/settings`}>
           <SidebarLink icon={<Settings size={20} />} label="Settings" />
         </Link>

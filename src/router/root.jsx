@@ -37,6 +37,9 @@ import PatientBloodbank from "../pages/patient/BloodbankList"
 import DoctorProfile from "../pages/doctor/Profile"
 import DoctorStetting from "../pages/doctor/Settings"
 import DoctorAppoinment from "../pages/doctor/AppoinmentList"
+import Instructions from "../pages/admin/InstructionList"
+import DoctorPatients from "../pages/doctor/PatientList"
+import DoctorPatientDetails from "../pages/doctor/PatientDetails"
 
 export const router = createBrowserRouter([
     {
@@ -60,7 +63,9 @@ export const router = createBrowserRouter([
             { path: "patient/bloodbanks", element: < PatientBloodbank/>},
             { path: "doctor/profile", element: < DoctorProfile/>},
             { path: "doctor/settings", element: < DoctorStetting/>},
-            { path: "doctor/appoinments", element: < DoctorAppoinment/>}
+            { path: "doctor/appoinments", element: < DoctorAppoinment/>},
+            { path: "doctor/patients", element: < DoctorPatients/>},
+            { path: "doctor/:id", element: < DoctorPatientDetails/>},
         ]
     },
     {
@@ -85,7 +90,8 @@ export const router = createBrowserRouter([
             { path: "reschedule/:appoinmentId", element: <RescheduleAppoinment />},            
             { path: "task", element: <StaffTasks />},
             { path: "addTask/:staffId",element: <AddTask />},
-            { path: "editTask/:taskId",element: <UpdateTask />}
+            { path: "editTask/:taskId",element: <UpdateTask />},
+            { path: "instruction", element: <Instructions />}
         ]
     }
 ]);

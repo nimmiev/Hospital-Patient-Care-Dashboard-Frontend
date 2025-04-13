@@ -95,7 +95,10 @@ const AppoinmentList = () => {
                 <td className="p-3">{appoinment.patientName}</td>
                 <td className="p-3">{appoinment.consultationNotes}</td>
                 <td className="p-3 flex space-x-2">
-                  <button className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button>
+                  {/* <button className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button> */}
+                  {appoinment.status !== "Completed" && (
+                    <button  className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button>
+                  )}
                   <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
                 </td>
               </tr>

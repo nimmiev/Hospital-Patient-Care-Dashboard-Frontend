@@ -15,9 +15,13 @@ const RootLayout = () => {
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
 
   // Show Sidebar only for exact dashboard paths
-  const showSidebar = ["/patient", "/staff", "/doctor", "/patient/profile", "/patient/settings",
-    "/patient/appoinments", "/patient/bloodbanks", "/doctor/profile", "/doctor/settings", "/doctor/appoinments"].includes(location.pathname);
+  // const showSidebar = ["/patient", "/staff", "/doctor", "/patient/profile", "/patient/settings",
+  //   "/patient/appoinments", "/patient/bloodbanks", "/doctor/profile", "/doctor/settings", "/doctor/appoinments", "/doctor/patients"].includes(location.pathname);
 
+  const showSidebar = ["/patient", "/doctor", "/staff"].some(path =>
+    location.pathname.startsWith(path)
+  );
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}

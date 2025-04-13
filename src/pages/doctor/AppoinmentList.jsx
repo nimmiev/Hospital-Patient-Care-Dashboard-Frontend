@@ -20,35 +20,34 @@ const AppoinmentList = () => {
 
     const fetchAppoinments = async () => {
         try {
-          const response = await axiosInstance.get("/api/doctor/appoinment-list");
-        //   console.log(response)
-          setAppoinments(response.data.data);
-          setIsScheduled(response.data.scheduled);
+            const response = await axiosInstance.get("/api/doctor/appoinment-list");
+            //   console.log(response)
+            setAppoinments(response.data.data);
         } catch (error) {
-          console.error("Error fetching Appoinment:", error);
+            console.error("Error fetching Appoinment:", error);
         }
-      };
+    };
 
     const handleAddNotes = (id) => {
-    setAddNotesId(id);
-    setShowNotesModal(true);
+        setAddNotesId(id);
+        setShowNotesModal(true);
     };
 
     const submitNotes = async () => {
         try {
-          await axiosInstance.put(`/api/doctor/add-notes/${AddNotesId}`, { consultationNotes: notes });
-          toast.success("Consultation notes added!");
-          setShowNotesModal(false);
-          setAddNotesId(null);
-          setNotes("");
-          fetchAppoinments(); // Refresh list
+            await axiosInstance.put(`/api/doctor/add-notes/${AddNotesId}`, { consultationNotes: notes });
+            toast.success("Consultation notes added!");
+            setShowNotesModal(false);
+            setAddNotesId(null);
+            setNotes("");
+            fetchAppoinments(); // Refresh list
         } catch (error) {
-          toast.error("Failed to add notes.");
-          console.error("Error adding notes:", error);
+            toast.error("Failed to add notes.");
+            console.error("Error adding notes:", error);
         }
-      };
-      
-      
+    };
+
+
 
     const cancelAppoinment = async () => {
         try {
@@ -70,7 +69,9 @@ const AppoinmentList = () => {
         currentPage * itemsPerPage
     );
 
-    // console.log(appoinments)
+    const canModifyAppointment = (status) => {
+        return status !== "Completed" && status !== "Cancelled";
+    };
 
     return (
         <div className="p-6">
@@ -120,7 +121,9 @@ const AppoinmentList = () => {
                                     {(appoinment.status !== "Completed" && appoinment.status !== "Cancelled") && (
                                         <button className="btn btn-sm btn-warning" onClick={() => handleAddNotes(appoinment._id)}>Add notes</button>
                                     )}
-                                    <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
+                                    {canModifyAppointment(appoinment.status) && (
+                                        <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
+                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -150,23 +153,23 @@ const AppoinmentList = () => {
             </div>
 
             {showNotesModal && (
-            <div className="modal modal-open">
-                <div className="modal-box">
-                <h3 className="font-bold text-lg">Add Consultation Notes</h3>
-                <textarea
-                    className="textarea textarea-bordered w-full mt-3"
-                    rows="4"
-                    placeholder="Write notes here..."
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                />
-                <div className="modal-action">
-                    <button className="btn btn-primary" onClick={submitNotes}>Save</button>
-                    <button className="btn" onClick={() => { setShowNotesModal(false); setAddNotesId(null); }}>Cancel</button>
+                <div className="modal modal-open">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">Add Consultation Notes</h3>
+                        <textarea
+                            className="textarea textarea-bordered w-full mt-3"
+                            rows="4"
+                            placeholder="Write notes here..."
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
+                        <div className="modal-action">
+                            <button className="btn btn-primary" onClick={submitNotes}>Save</button>
+                            <button className="btn" onClick={() => { setShowNotesModal(false); setAddNotesId(null); }}>Cancel</button>
+                        </div>
+                    </div>
+                    <div className="modal-backdrop" onClick={() => setShowNotesModal(false)}></div>
                 </div>
-                </div>
-                <div className="modal-backdrop" onClick={() => setShowNotesModal(false)}></div>
-            </div>
             )}
 
             {/* Cancel Confirmation Modal */}
