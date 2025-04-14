@@ -12,8 +12,7 @@ const DashbordHeader = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
-// console.log("token:", token)
-// console.log("role:", role)
+
         if (!token || !role) {
             navigate("/"); // or navigate("/login");
         }
@@ -22,7 +21,7 @@ const DashbordHeader = () => {
             try {
   
               const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-              console.log("role:", Urole)
+              console.log("role:", urole)
               const res = await axiosInstance.get(`/api/${urole}/me`, {
                 headers: {
                   Authorization: `Bearer ${token}`
@@ -44,15 +43,15 @@ const DashbordHeader = () => {
      // Logout function
      const handleLogout = async () => {
         try {
-            const role = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-// console.log(role)
+            const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
+
           let apiUrl = "/api/logout"; // default value
       
           // Set API endpoint based on role
-          if (role) {
-            apiUrl = `/api/${role}/logout`;
+          if (urole) {
+            apiUrl = `/api/${urole}/logout`;
           }
-    //   console.log(apiUrl)
+
           await axiosInstance.put(apiUrl);
       
           // Clear localStorage/sessionStorage values
