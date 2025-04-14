@@ -21,9 +21,9 @@ const DashbordHeader = () => {
         const fetchUser = async () => {
             try {
   
-              const role = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-              console.log("role:", role)
-              const res = await axiosInstance.get(`/api/${role}/me`, {
+              const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
+              console.log("role:", Urole)
+              const res = await axiosInstance.get(`/api/${urole}/me`, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
