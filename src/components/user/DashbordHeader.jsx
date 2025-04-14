@@ -9,38 +9,77 @@ const DashbordHeader = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [userData, setUserData] = useState({});
       
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("role");
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     const role = localStorage.getItem("role");
 
-        if (!token || !role) {
-            navigate("/"); // or navigate("/login");
-        }
+    //     if (!token || !role) {
+    //         navigate("/"); // or navigate("/login");
+    //     }
 
-        const fetchUser = async () => {
-            try {
+    //     const fetchUser = async () => {
+    //         try {
   
-              const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-              console.log("role:", urole)
-              const res = await axiosInstance.get(`/api/${urole}/me`, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              });
-              setUserData(res.data.data);
-            } catch (err) {
-              console.error("User fetch failed", err);
-              navigate("/login");
-            }
-          };
+    //           const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
+    //           console.log("role:", urole)
+    //           const res = await axiosInstance.get(`/api/${urole}/me`, {
+    //             headers: {
+    //               Authorization: `Bearer ${token}`
+    //             }
+    //           });
+    //           setUserData(res.data.data);
+    //         } catch (err) {
+    //           console.error("User fetch failed", err);
+    //           navigate("/login");
+    //         }
+    //       };
 
-        fetchUser();
-    }, [navigate]);
+    //     fetchUser();
+    // }, [navigate]);
 
 
         // console.log("userData", userData.profilepic)
 
      // Logout function
+     
+     useEffect(() => {
+        
+        const token = localStorage.getItem("token");
+        const roleMap = {
+            Doctor: 'doctor',
+            Staff: 'staff',
+            Patient: 'patient',
+          };
+          
+        const urole = roleMap[localStorage.getItem("role")] || localStorage.getItem("role")?.toLowerCase();
+    
+        if (!token || !urole) {
+            navigate("/login");
+            return;
+        }
+    
+        const fetchUser = async () => {
+            try {
+
+                console.log(`Calling endpoint: /api/${urole}/me`);
+
+                const res = await axiosInstance.get(`/api/${urole}/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setUserData(res.data.data);
+            } catch (err) {
+                console.error("User fetch failed", err);
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                navigate("/login");
+            }
+        };
+    
+        fetchUser();
+    }, [navigate]);
+    
      const handleLogout = async () => {
         try {
             const urole = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
