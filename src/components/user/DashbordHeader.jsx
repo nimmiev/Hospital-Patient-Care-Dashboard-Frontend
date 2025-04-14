@@ -12,7 +12,8 @@ const DashbordHeader = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
-// console.log("role:", role)
+console.log("token:", token)
+console.log("role:", role)
         if (!token || !role) {
             navigate("/"); // or navigate("/login");
         }
