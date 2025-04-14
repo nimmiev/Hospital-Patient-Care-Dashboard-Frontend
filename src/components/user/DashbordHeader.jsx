@@ -12,8 +12,8 @@ const DashbordHeader = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
-console.log("token:", token)
-console.log("role:", role)
+// console.log("token:", token)
+// console.log("role:", role)
         if (!token || !role) {
             navigate("/"); // or navigate("/login");
         }
@@ -22,7 +22,7 @@ console.log("role:", role)
             try {
   
               const role = localStorage.getItem("role")?.toLowerCase(); // e.g., 'admin', 'doctor', 'staff', etc.
-            //   console.log("role:", role)
+              console.log("role:", role)
               const res = await axiosInstance.get(`/api/${role}/me`, {
                 headers: {
                   Authorization: `Bearer ${token}`
