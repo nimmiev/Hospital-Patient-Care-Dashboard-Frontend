@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import PatientForm from "../../components/forms/PatientForm";
 import StaffForm from "../../components/forms/StaffForm";
@@ -9,6 +9,12 @@ import "react-toastify/dist/ReactToastify.css"; // Import styles
 const Signup = () => {
 
     const [activeTab, setActiveTab] = useState("patient");
+    
+    useEffect(() => {
+      document.documentElement.setAttribute("data-theme", "light");
+      localStorage.setItem("theme", "light");
+    }, []);
+    
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-white">

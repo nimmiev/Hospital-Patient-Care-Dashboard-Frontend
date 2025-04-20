@@ -8,8 +8,10 @@ const AppoinmentList = () => {
 
     const [appoinments, setAppoinments] = useState([]);
     const [notes, setNotes] = useState("");
+    const [addNotesId, setAddNotesId] = useState(null);
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [deleteAppoinmentId, setDeleteAppoinmentId] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const navigate = useNavigate();
@@ -29,13 +31,21 @@ const AppoinmentList = () => {
     };
 
     const handleAddNotes = (id) => {
+        // console.log(id)
         setAddNotesId(id);
         setShowNotesModal(true);
     };
 
     const submitNotes = async () => {
         try {
-            await axiosInstance.put(`/api/doctor/add-notes/${AddNotesId}`, { consultationNotes: notes });
+
+            if (!notes.trim()) {
+                toast.error("Consultation note cannot be empty.");
+                return;
+            }
+
+            const res = await axiosInstance.post(`/api/doctor/add-notes/${addNotesId}`, { consultationNotes: notes });
+            // console.log(res)
             toast.success("Consultation notes added!");
             setShowNotesModal(false);
             setAddNotesId(null);
@@ -47,8 +57,6 @@ const AppoinmentList = () => {
         }
     };
 
-
-
     const cancelAppoinment = async () => {
         try {
             await axiosInstance.delete(`/api/doctor/cancel/${deleteAppoinmentId}`);
@@ -59,6 +67,29 @@ const AppoinmentList = () => {
             console.error("Error cancelling appointment:", error);
         } finally {
             setDeleteAppoinmentId(null);
+        }
+    };
+
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) {
+            fetchAppoinments(); // Reset to full list
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.get(`/api/doctor/searchAppoinment?name=${searchQuery}`);
+            const result = response.data.data;
+            // console.log(result)
+            if (result.length === 0) {
+                toast.info("No appoinment found. Showing all apoinments.");
+                fetchAppoinments(); // fallback to full list
+            } else {
+                setAppoinments(result);
+                setCurrentPage(1);
+            }
+        } catch (error) {
+            console.error("Error searching doctor:", error);
+            toast.error("Something went wrong!");
         }
     };
 
@@ -81,7 +112,13 @@ const AppoinmentList = () => {
 
                 <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Appoinment List</h2>
 
-                <div></div>
+                <div>
+                    {/* Search Input */}
+                    <input
+                        type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Patient Name" className="input input-bordered w-full md:w-48" />
+                    <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
+                </div>
             </div>
 
             {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}
@@ -115,15 +152,17 @@ const AppoinmentList = () => {
                                         {appoinment.status}
                                     </span>
                                 </td>
-                                <td className="p-3">{appoinment.patientId.name}</td>
+                                <td className="p-3">{appoinment.patientId?.name || appoinment.patientName || "N/A"}</td>
                                 <td className="p-3">{appoinment.consultationNotes}</td>
-                                <td className="p-3 flex space-x-2">
-                                    {(appoinment.status !== "Completed" && appoinment.status !== "Cancelled") && (
-                                        <button className="btn btn-sm btn-warning" onClick={() => handleAddNotes(appoinment._id)}>Add notes</button>
-                                    )}
-                                    {canModifyAppointment(appoinment.status) && (
-                                        <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
-                                    )}
+                                <td className="p-3">
+                                    <div className="flex gap-2 whitespace-nowrap">
+                                        {(appoinment.status !== "Completed" && appoinment.status !== "Cancelled") && (
+                                            <button className="btn btn-sm btn-warning">Add notes</button>
+                                        )}
+                                        {canModifyAppointment(appoinment.status) && (
+                                            <button className="btn btn-sm btn-error">Cancel</button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}

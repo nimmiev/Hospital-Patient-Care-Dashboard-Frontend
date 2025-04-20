@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const PatientList = () => {
 
   const [patients, setPatients] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -19,38 +18,17 @@ const PatientList = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await axiosInstance.get("/api/doctor/patient");
-        // console.log("Patient Data:", response.data.data);
+      const response = await axiosInstance.get("/api/staff/patient");
+      // console.log("Patient Data:", response.data.data);
       setPatients(response.data.data);
     } catch (error) {
       console.error("Error fetching patients:", error);
     }
   };
 
-  const handleSearch = async () => {
-      if (!searchQuery.trim()) {
-        fetchPatients(); // Reset to full list
-        return;
-      }
-  
-      try {
-        const response = await axiosInstance.get(`/api/doctor/searchPatient?name=${searchQuery}`);
-        const result = response.data.data;
-        // console.log(result)
-        if (result.length === 0) {
-          toast.info("No patient found. Showing all patients.");
-          fetchPatients(); // fallback to full list
-        } else {
-          setPatients(result);
-          setCurrentPage(1);
-        }
-      } catch (error) {
-        console.error("Error searching doctor:", error);
-        toast.error("Something went wrong!");
-      }
-    };
-
   // Pagination logic
+  
+  
   const totalPages = Math.ceil(patients.length / itemsPerPage);
   const paginatedData = patients.slice(
     (currentPage - 1) * itemsPerPage,
@@ -62,16 +40,12 @@ const PatientList = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Back navigating button */}
         <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
-
+                
         <h2 className="text-2xl font-semibold text-primary">Patients List</h2>
-
-        <div>
-          {/* Search Input */}
-          <input
-            type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Patient Name" className="input input-bordered w-full md:w-48" />
-          <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
-        </div>
+        
+        <button className="btn btn-primary" onClick={() => navigate("/staff/addPatient")}>
+          + Add Patient
+        </button>
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">
@@ -81,20 +55,16 @@ const PatientList = () => {
               <th className="p-3">#</th>
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
-              {/* <th className="p-3">Phone</th> */}
-              <th className="p-3">Action</th>
+              <th className="p-3">Phone</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-base-300">
             {paginatedData.map((patient, index) => (
-              <tr key={patient._id} className="hover:bg-base-200 transition duration-200">
+              <tr key={(currentPage - 1) * itemsPerPage + index} className="hover:bg-base-200 transition duration-200">
                 <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="p-3">{patient.name}</td>
                 <td className="p-3">{patient.email}</td>
-                {/* <td className="p-3">{patient.phone}</td> */}
-                <td className="p-3 flex space-x-2">
-                  <button className="btn btn-sm btn-info" onClick={() => navigate(`/doctor/${patient.publicId}`)}>View</button>
-                </td>
+                <td className="p-3">{patient.phone}</td>
               </tr>
             ))}
           </tbody>

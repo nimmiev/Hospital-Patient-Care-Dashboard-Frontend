@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AdminStaff = () => {
 
   const [staffs, setStaffs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const [deleteStaffId, setDeleteStaffId] = useState(null);
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -60,7 +61,30 @@ const AdminStaff = () => {
     } finally {
       setDeleteStaffId(null); // Close modal
     }
-    };
+  };
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      fetchStaffs(); // Reset to full list
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(`/api/admin/searchStaff?name=${searchQuery}`);
+      const result = response.data.data;
+      // console.log(result)
+      if (result.length === 0) {
+        toast.info("No staff found. Showing all staffs.");
+        fetchStaffs(); // fallback to full list
+      } else {
+        setStaffs(result);
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      console.error("Error searching doctor:", error);
+      toast.error("Something went wrong!");
+    }
+  };
 
   // Pagination logic
   const totalPages = Math.ceil(staffs.length / itemsPerPage);
@@ -74,17 +98,19 @@ const AdminStaff = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        
+
         {/* Back navigating button */}
         <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
-        
+
         <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Staff Management List</h2>
 
-        <div></div>
-      
-        {/* <button className="btn btn-primary" onClick={() => navigate("/admin/staff/add-staff")}>
-          + Add Staff
-        </button> */}
+        <div>
+          {/* Search Input */}
+          <input
+            type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Staff Name" className="input input-bordered w-full md:w-48" />
+          <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
+        </div>
 
       </div>
 
@@ -111,14 +137,24 @@ const AdminStaff = () => {
                 <td className="p-3">{staff.name}</td>
                 <td className="p-3">{staff.email}</td>
                 <td className="p-3">{staff.phone}</td>
-                <td className={`p-3 ${ staff.approved === true ? 'text-green-600' : staff.approved === false ? 'text-red-500' : 'text-yellow-500' }`}> {
-                    staff.approved === true ? "Accepted" :
-                    staff.approved === false ? "Rejected" : "Requested" }
+                <td className={`p-3 ${staff.approved === true ? 'text-green-600' : staff.approved === false ? 'text-red-500' : 'text-yellow-500'}`}> {
+                  staff.approved === true ? "Accepted" :
+                    staff.approved === false ? "Rejected" : "Requested"}
                 </td>
                 <td className="p-3 flex space-x-2">
                   <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/staff/${staff._id}`)}>View</button>
-                  <button className="btn btn-sm btn-success" onClick={() => handleApprove(staff._id)}>Approve</button>
-                  <button className="btn btn-sm btn-warning" onClick={() => handleReject(staff._id)}>Reject</button>
+
+                  {/* Approve button - show if not already approved */}
+                  {(staff.approved === false || staff.approved === null || staff.approved === undefined) && (
+                    <button className="btn btn-sm btn-success" onClick={() => handleApprove(staff._id)}>Approve</button>
+                  )}
+                  {/* <button className="btn btn-sm btn-success" onClick={() => handleApprove(staff._id)}>Approve</button> */}
+
+                  {/* Reject button - show if not already rejected */}
+                  {(staff.approved === true || staff.approved === null || staff.approved === undefined) && (
+                    <button className="btn btn-sm btn-warning" onClick={() => handleReject(staff._id)}>Reject</button>
+                  )}
+                  {/* <button className="btn btn-sm btn-warning" onClick={() => handleReject(staff._id)}>Reject</button> */}
                   <button className="btn btn-sm btn-error" onClick={() => setDeleteStaffId(staff._id)}>Delete</button>
                   <button className="btn btn-sm btn-accent" onClick={() => navigate(`/admin/addTask/${staff._id}`)} >Add Task</button>
                 </td>

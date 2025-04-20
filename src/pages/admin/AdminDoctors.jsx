@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AdminDoctors = () => {
@@ -9,12 +9,13 @@ const AdminDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteDoctorId, setDeleteDoctorId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
   const navigate = useNavigate();
-
+  // search
   useEffect(() => {
-      fetchDoctors();
-    }, []);
+    fetchDoctors();
+  }, []);
 
   const fetchDoctors = async () => {
     try {
@@ -62,7 +63,48 @@ const AdminDoctors = () => {
     }
   };
 
+  // const handleSearch = async () => {
+  //   if (!searchQuery.trim()) {
+  //     fetchDoctors();
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axiosInstance.get(`/api/staff/searchDoctor?name=${searchQuery}`);
+  //     console.log(response)
+  //     setDoctors(response.data.data);
+  //     setCurrentPage(1);
+  //   } catch (error) {
+  //     console.error("Error searching doctor:", error);
+  //     toast.error("Doctor not found");
+  //   }
+  // };
+
   // Pagination logic
+  
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      fetchDoctors(); // Reset to full list
+      return;
+    }
+  
+    try {
+      const response = await axiosInstance.get(`/api/admin/searchDoctor?name=${searchQuery}`);
+      const result = response.data.data;
+  // console.log(result)
+      if (result.length === 0) {
+        toast.info("No doctors found. Showing all doctors.");
+        fetchDoctors(); // fallback to full list
+      } else {
+        setDoctors(result);
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      console.error("Error searching doctor:", error);
+      toast.error("Something went wrong!");
+    }
+  };
+  
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
   const paginatedData = doctors.slice(
     (currentPage - 1) * itemsPerPage,
@@ -74,10 +116,17 @@ const AdminDoctors = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Back navigating button */}
         <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
-          
+
         <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Doctors Management List</h2>
 
-        <div></div>
+        <div>
+          {/* Search Input */}
+          <input
+            type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Doctor Name" className="input input-bordered w-full md:w-48" />
+          <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
+
+        </div>
 
         {/* <button className="btn btn-primary" onClick={() => navigate("/admin/doctor/add-doctor")}>
             + Add Doctor
@@ -106,14 +155,29 @@ const AdminDoctors = () => {
                 <td className="p-3">{doctor.name}</td>
                 <td className="p-3">{doctor.email}</td>
                 <td className="p-3">{doctor.phone}</td>
-                <td className={`p-3 ${ doctor.approved === true ? 'text-green-600' : doctor.approved === false ? 'text-red-500' : 'text-yellow-500' }`}> {
-                    doctor.approved === true ? "Accepted" :
-                    doctor.approved === false ? "Rejected" : "Requested" }
+                <td className={`p-3 ${doctor.approved === true ? 'text-green-600' : doctor.approved === false ? 'text-red-500' : 'text-yellow-500'}`}> {
+                  doctor.approved === true ? "Accepted" :
+                    doctor.approved === false ? "Rejected" : "Requested"}
                 </td>
-                <td className="p-3 flex space-x-2">
+                {/* <td className="p-3 flex space-x-2">
                   <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/doctor/${doctor._id}`)}>View</button>                  
                   <button className="btn btn-sm btn-success" onClick={() => handleApprove(doctor._id)}>Approve</button>                  
                   <button className="btn btn-sm btn-warning" onClick={() => handleReject(doctor._id)}>Reject</button>                  
+                  <button className="btn btn-sm btn-error" onClick={() => setDeleteDoctorId(doctor._id)}>Delete</button>
+                </td> */}
+                <td className="p-3 flex space-x-2">
+                  <button className="btn btn-sm btn-info" onClick={() => navigate(`/admin/doctor/${doctor._id}`)}>View</button>
+
+                  {/* Approve button - show if not already approved */}
+                  {(doctor.approved === false || doctor.approved === null || doctor.approved === undefined) && (
+                    <button className="btn btn-sm btn-success" onClick={() => handleApprove(doctor._id)}>Approve</button>
+                  )}
+
+                  {/* Reject button - show if not already rejected */}
+                  {(doctor.approved === true || doctor.approved === null || doctor.approved === undefined) && (
+                    <button className="btn btn-sm btn-warning" onClick={() => handleReject(doctor._id)}>Reject</button>
+                  )}
+
                   <button className="btn btn-sm btn-error" onClick={() => setDeleteDoctorId(doctor._id)}>Delete</button>
                 </td>
               </tr>

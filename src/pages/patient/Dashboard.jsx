@@ -51,6 +51,7 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        // console.log(res)
         setInstructions(res.data.data || []);
       } catch (err) {
         console.error("Failed to fetch instructions", err);

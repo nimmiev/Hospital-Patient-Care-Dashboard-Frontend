@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,6 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("theme", "light");
+  }, []);
+  
 
   const loginApiRoutes = [
     { path: "/api/admin/login", role: "Admin", redirect: "/admin" },
@@ -28,47 +33,30 @@ const Login = () => {
     if (!isValidEmail(data.email)) return toast.error("Please enter a valid email");
     if (!data.password.trim()) return toast.error("Password is required");
   
-    let found = false;
+    for (const route of loginApiRoutes) {
+      try {
+        const res = await axiosInstance.put(route.path, data, { withCredentials: true });
   
-    for (let api of loginApiRoutes) {
-      try {  
-        const res = await axiosInstance.put(api.path, data, { withCredentials: true });
-  
-        if (res.data?.data?.role === api.role) {
+        if (res.status === 200 && res.data?.data?.role === route.role) {
           const token = res.data.data.token;
-        
-          // Save token and role
           localStorage.setItem("token", token);
-          localStorage.setItem("role", api.role);
-        
-          // Set Authorization header globally for future API calls
+          localStorage.setItem("role", route.role);
           axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        
-          toast.success(`Logged in as ${api.role}`);
-          navigate(api.redirect);
-          found = true;
-          break;
+          toast.success(`Logged in as ${route.role}`);
+          return navigate(route.redirect);
         }
-        
       } catch (err) {
-        // console.log(err?.response?.status, err?.response?.data?.message);
         const status = err?.response?.status;
-        // Show toast for errors except 404
-        // if (status !== 404) {
-        //   toast.error(err.response?.data?.message || "Login failed");
-        // }
-
-        if (status !== 404) {
-          // ❗ Only show errors other than 404
-          toast.error(err.response?.data?.message || "Login failed");
-          return;
+  
+        // If it's not a 404 (not found) or 401/403 (unauthorized), show the error
+        if (status !== 404 && status !== 401 && status !== 403) {
+          return toast.error(err?.response?.data?.message || "Login failed");
         }
+        // Else continue to try the next role
       }
     }
   
-    if (!found) {
-      toast.warning("User not found in any category.");
-    }
+    toast.warning("User not found in any category.");
   };
   
   const formchangeHandler = (event, field) => {

@@ -40,6 +40,13 @@ import DoctorAppoinment from "../pages/doctor/AppoinmentList"
 import Instructions from "../pages/admin/InstructionList"
 import DoctorPatients from "../pages/doctor/PatientList"
 import DoctorPatientDetails from "../pages/doctor/PatientDetails"
+import StaffProfile from "../pages/staff/Profile"
+import StaffStetting from "../pages/staff/Settings"
+import StaffAppoinment from "../pages/staff/AppoinmentList"
+import StaffBloodbank from "../pages/staff/BloodbankList"
+import StaffPatients from "../pages/staff/PatientList"
+import StaffTaskLists from "../pages/staff/TaskList"
+import StaffAddPatients from "../pages/staff/AddPatient"
 
 export const router = createBrowserRouter([
     {
@@ -66,6 +73,13 @@ export const router = createBrowserRouter([
             { path: "doctor/appoinments", element: < DoctorAppoinment/>},
             { path: "doctor/patients", element: < DoctorPatients/>},
             { path: "doctor/:id", element: < DoctorPatientDetails/>},
+            { path: "staff/profile", element: < StaffProfile/>},
+            { path: "staff/settings", element: < StaffStetting/>},
+            { path: "staff/appoinments", element: < StaffAppoinment/>},
+            { path: "staff/bloodbanks", element: < StaffBloodbank/>},
+            { path: "staff/patients", element: < StaffPatients/>},
+            { path: "staff/tasks", element: < StaffTaskLists/>},
+            { path: "staff/addPatient", element: < StaffAddPatients />}          
         ]
     },
     {

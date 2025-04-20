@@ -46,8 +46,8 @@ export const usePatientForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axiosInstance.post("/api/admin/add-patient", data);
-      console.log(response);
+      const response = await axiosInstance.post("/api/admin/addPatient", data);
+      // console.log(response);
       toast.success("Patient added successfully!");
       reset();
       // setTimeout(() => {

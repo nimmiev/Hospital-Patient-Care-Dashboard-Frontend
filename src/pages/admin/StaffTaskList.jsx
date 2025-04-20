@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
 
 const StaffTaskList = () => {
 
@@ -48,7 +49,7 @@ const StaffTaskList = () => {
     }
 
     try {
-      const response = await axiosInstance.get(`/api/admin/search-task?bloodGroup=${searchQuery}`);
+      const response = await axiosInstance.get(`/api/admin/search-task?date=${searchQuery}`);
       setTasks(response.data.data);
       setCurrentPage(1);
     } catch (error) {
@@ -76,10 +77,10 @@ const StaffTaskList = () => {
 
         <div className="flex gap-2 w-full md:w-auto">
           {/* Search Input */}
-          {/* <input
+          <input
             type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Staff name" className="input input-bordered w-full md:w-48" />
-          <button className="btn btn-primary" onClick={handleSearch}>Search</button> */}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Date ( Y-M-D )" className="input input-bordered w-full md:w-48" />
+          <button className="btn btn-primary" onClick={handleSearch}>Search</button>
         </div>
       </div>
 
@@ -108,7 +109,7 @@ const StaffTaskList = () => {
                   <td className="p-3">{task.staffDetails.name}</td>
                   <td className="p-3">{task.staffDetails.email}</td>
                   <td className="p-3">{task.taskDescription}</td>
-                  <td className="p-3">{task.createdAt}</td>
+                  <td className="p-3">{moment(task.createdAt).format("YYYY-MM-DD HH:mm")}</td>
                   <td className="p-3">{task.status}</td>
                   <td className="p-3 flex space-x-2">
                     <button className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/editTask/${task._id}`)}>Update</button>

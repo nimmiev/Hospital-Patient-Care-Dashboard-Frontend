@@ -8,6 +8,7 @@ const AppoinmentList = () => {
 
   const [appoinments, setAppoinments] = useState([]);
   const [deleteAppoinmentId, setDeleteAppoinmentId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -39,6 +40,29 @@ const AppoinmentList = () => {
     }
   };
 
+  const handleSearch = async () => {
+      if (!searchQuery.trim()) {
+        fetchAppoinments(); // Reset to full list
+        return;
+      }
+  
+      try {
+        const response = await axiosInstance.get(`/api/admin/searchAppoinment?name=${searchQuery}`);
+        const result = response.data.data;
+        // console.log(result)
+        if (result.length === 0) {
+          toast.info("No appoinment found. Showing all apoinments.");
+          fetchAppoinments(); // fallback to full list
+        } else {
+          setAppoinments(result);
+          setCurrentPage(1);
+        }
+      } catch (error) {
+        console.error("Error searching doctor:", error);
+        toast.error("Something went wrong!");
+      }
+    };
+
   // Pagination logic
   const totalPages = Math.ceil(appoinments.length / itemsPerPage);
   const paginatedData = appoinments.slice(
@@ -56,7 +80,13 @@ const AppoinmentList = () => {
           
         <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Appoinment List</h2>
 
-        <div></div>
+        <div>
+          {/* Search Input */}
+          <input
+            type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Doctor/Patient Name" className="input input-bordered w-full md:w-48" />
+          <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
+        </div>
       </div>
 
       {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}

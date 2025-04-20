@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AdminPatients = () => {
@@ -9,6 +9,7 @@ const AdminPatients = () => {
   const [patients, setPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [deletePatientId, setDeletePatientId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -41,15 +42,26 @@ const AdminPatients = () => {
     }
   };
 
-  const handleAddAppointment = async (id) => {
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      fetchPatients(); // Reset to full list
+      return;
+    }
+
     try {
-      const response = await axiosInstance.post("/api/admin/appointment", { patientId: id });
-      // alert("Appointment added successfully!");
-      toast.success("Appointment added successfully!");
-      // console.log("Appointment Data:", response.data);
+      const response = await axiosInstance.get(`/api/admin/searchPatient?name=${searchQuery}`);
+      const result = response.data.data;
+      // console.log(result)
+      if (result.length === 0) {
+        toast.info("No patient found. Showing all patients.");
+        fetchPatients(); // fallback to full list
+      } else {
+        setPatients(result);
+        setCurrentPage(1);
+      }
     } catch (error) {
-      toast.error("Error adding appointment!");
-      console.error("Error adding appointment:", error);
+      console.error("Error searching doctor:", error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -65,12 +77,21 @@ const AdminPatients = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Back navigating button */}
         <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
-                
+
         <h2 className="text-2xl font-semibold text-primary">Patient Management List</h2>
-        
-        <button className="btn btn-primary" onClick={() => navigate("/admin/patient/add-patient")}>
-          + Add Patient
-        </button>
+
+        <div>
+          {/* Search Input */}
+          <input
+            type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} placeholder="Search by Patient Name" className="input input-bordered w-full md:w-48" />
+          <button className="btn btn-primary ml-2" onClick={handleSearch} >Search</button>
+
+          <button className="btn btn-primary ml-2" onClick={() => navigate("/admin/patient/add-patient")}>
+            + Add Patient
+          </button>
+        </div>
+
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">
