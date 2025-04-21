@@ -36,7 +36,7 @@ const RootLayout = () => {
         )}
 
         {/* Main outlet area */}
-        <main className="flex-1 p-4">
+        <main className="flex-1">
           <Outlet />
         </main>
       </div>
