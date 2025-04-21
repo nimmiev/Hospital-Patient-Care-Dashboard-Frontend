@@ -154,7 +154,7 @@ export default function PatientSignupForm() {
             <div className="flex space-x-4">
               {["Male", "Female", "Other"].map((g) => (
                 <label key={g} className="flex items-center">
-                  <input type="radio" name="gender" value={g} checked={formData.gender === g} onChange={handleChange} /> <span>{g.charAt(0).toUpperCase() + g.slice(1)}</span>
+                  <input type="radio" name="gender" value={g} checked={formData.gender === g} onChange={handleChange} /> <span className="ml-2">{g.charAt(0).toUpperCase() + g.slice(1)}</span>
                 </label>
               ))}
             </div>
