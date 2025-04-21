@@ -113,7 +113,7 @@ const Dashboard = () => {
             <div className="carousel-item w-full transition duration-700 ease-in-out">
               <div className="card bg-base-100 shadow-xl border border-gray-300 p-6">
                 <h4 className="text-lg font-bold text-primary mb-2">
-                  {instructions[currentIndex].title}
+                  {instructions[currentIndex].title || "No Title Available"}
                 </h4>
                 <p className="text-gray-600">{instructions[currentIndex].description}</p>
               </div>
