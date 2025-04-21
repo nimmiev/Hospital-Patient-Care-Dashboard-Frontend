@@ -214,8 +214,10 @@ export default function PatientSignupForm() {
             {errors.alcoholConsumption && <p className="text-red-500">{errors.alcoholConsumption}</p>} 
           </label>
 
-          <button onClick={prevStep} className="btn btn-secondary">Back</button>
-          <button onClick={nextStep} className="btn btn-primary" disabled={Object.keys(errors).length > 0}>Next</button>
+          <div  className="flex justify-between">
+            <button onClick={prevStep} className="btn btn-secondary">Back</button>
+            <button onClick={nextStep} className="btn btn-primary" disabled={Object.keys(errors).length > 0}>Next</button>
+          </div>
         </div>
       )}
 

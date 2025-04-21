@@ -7,11 +7,14 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("");
+
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", "light");
     localStorage.setItem("theme", "light");
   }, []);
-  
+
 
   const loginApiRoutes = [
     { path: "/api/admin/login", role: "Admin", redirect: "/admin" },
@@ -26,39 +29,66 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const loginformSubmitHandler = async (e) => {
-    e.preventDefault();
-  
-    if (!data.email.trim()) return toast.error("Email is required");
-    if (!isValidEmail(data.email)) return toast.error("Please enter a valid email");
-    if (!data.password.trim()) return toast.error("Password is required");
-  
-    for (const route of loginApiRoutes) {
-      try {
-        const res = await axiosInstance.put(route.path, data, { withCredentials: true });
-  
-        if (res.status === 200 && res.data?.data?.role === route.role) {
-          const token = res.data.data.token;
-          localStorage.setItem("token", token);
-          localStorage.setItem("role", route.role);
-          axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          toast.success(`Logged in as ${route.role}`);
-          return navigate(route.redirect);
-        }
-      } catch (err) {
-        const status = err?.response?.status;
-  
-        // If it's not a 404 (not found) or 401/403 (unauthorized), show the error
-        if (status !== 404 && status !== 401 && status !== 403) {
-          return toast.error(err?.response?.data?.message || "Login failed");
-        }
-        // Else continue to try the next role
-      }
+const loginformSubmitHandler = async (e) => {
+  e.preventDefault();
+
+  if (!data.email.trim()) return toast.error("Email is required");
+  if (!isValidEmail(data.email)) return toast.error("Please enter a valid email");
+  if (!data.password.trim()) return toast.error("Password is required");
+
+  setLoading(true);
+
+  // If role is selected
+  if (role) {
+    const route = loginApiRoutes.find(r => r.role === role);
+    if (!route) {
+      setLoading(false);
+      return toast.error("Invalid role selected.");
     }
-  
-    toast.warning("User not found in any category.");
-  };
-  
+
+    try {
+      const res = await axiosInstance.put(route.path, data, { withCredentials: true });
+      if (res.status === 200 && res.data?.data?.role === route.role) {
+        const token = res.data.data.token;
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", route.role);
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        toast.success(`Logged in as ${route.role}`);
+        return navigate(route.redirect);
+      }
+    } catch (err) {
+      const backendMsg = err?.response?.data?.message;
+      toast.error(backendMsg || "Login failed")
+    }
+
+    setLoading(false);
+    return;
+  }
+
+  // If no role selected, try admin login
+  const adminRoute = loginApiRoutes.find(r => r.role === "Admin");
+  try {
+    const res = await axiosInstance.put(adminRoute.path, data, { withCredentials: true });
+    if (res.status === 200 && res.data?.data?.role === "Admin") {
+      const token = res.data.data.token;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", "Admin");
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      toast.success(`Logged in as Admin`);
+      return navigate(adminRoute.redirect);
+    }
+  } catch (err) {
+    const status = err?.response?.status;
+    if (status === 401 || status === 403 || status === 404) {
+      toast.info("Please select a role");
+    } else {
+      toast.error(err?.response?.data?.message || "Login failed");
+    }
+  }
+
+  setLoading(false);
+};
+
   const formchangeHandler = (event, field) => {
     setData((prevData) => ({
       ...prevData,
@@ -76,6 +106,12 @@ const Login = () => {
         <div className="w-full md:w-1/2 p-8 flex flex-col justify-center bg-white">
           <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
           <form className="space-y-4" onSubmit={loginformSubmitHandler}>
+            <select className="select select-bordered w-full" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="">Select Role</option>
+              <option value="Patient">Patient</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Staff">Staff</option>
+            </select>
             <input
               type="email"
               placeholder="Email"
@@ -90,7 +126,10 @@ const Login = () => {
               onChange={(e) => formchangeHandler(e, "password")}
               className="input input-bordered w-full"
             />
-            <button className="btn btn-primary w-full">Login</button>
+            <button className="btn btn-primary w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </button>
+
           </form>
           <p className="text-center mt-4">
             Don't have an account?
