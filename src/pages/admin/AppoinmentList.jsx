@@ -10,6 +10,7 @@ const AppoinmentList = () => {
   const [deleteAppoinmentId, setDeleteAppoinmentId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [requestAccept, setRequestAccept] = useState([]);
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -40,28 +41,41 @@ const AppoinmentList = () => {
     }
   };
 
+  const acceptAppointment = async (id) => {
+    try {
+      const res = await axiosInstance.put(`/api/admin/accept/${id}`);
+      console.log(res)
+      toast.success("Appointment accepted!");
+      fetchAppoinments(); // Refresh list
+    } catch (error) {
+      console.error("Error accepting appointment:", error);
+      toast.error("Failed to accept appointment!");
+    }
+  };
+
+
   const handleSearch = async () => {
-      if (!searchQuery.trim()) {
-        fetchAppoinments(); // Reset to full list
-        return;
+    if (!searchQuery.trim()) {
+      fetchAppoinments(); // Reset to full list
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(`/api/admin/searchAppoinment?name=${searchQuery}`);
+      const result = response.data.data;
+      // console.log(result)
+      if (result.length === 0) {
+        toast.info("No appoinment found. Showing all apoinments.");
+        fetchAppoinments(); // fallback to full list
+      } else {
+        setAppoinments(result);
+        setCurrentPage(1);
       }
-  
-      try {
-        const response = await axiosInstance.get(`/api/admin/searchAppoinment?name=${searchQuery}`);
-        const result = response.data.data;
-        // console.log(result)
-        if (result.length === 0) {
-          toast.info("No appoinment found. Showing all apoinments.");
-          fetchAppoinments(); // fallback to full list
-        } else {
-          setAppoinments(result);
-          setCurrentPage(1);
-        }
-      } catch (error) {
-        console.error("Error searching doctor:", error);
-        toast.error("Something went wrong!");
-      }
-    };
+    } catch (error) {
+      console.error("Error searching doctor:", error);
+      toast.error("Something went wrong!");
+    }
+  };
 
   // Pagination logic
   const totalPages = Math.ceil(appoinments.length / itemsPerPage);
@@ -77,7 +91,7 @@ const AppoinmentList = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Back navigating button */}
         <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
-          
+
         <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Appoinment List</h2>
 
         <div>
@@ -125,9 +139,14 @@ const AppoinmentList = () => {
                 <td className="p-3">{appoinment.patientName}</td>
                 <td className="p-3">{appoinment.consultationNotes}</td>
                 <td className="p-3 flex space-x-2">
+                  {appoinment.status === "Requested" && (
+                    <button className="btn btn-sm btn-success" onClick={() => acceptAppointment(appoinment._id)}>
+                      Accept
+                    </button>
+                  )}
                   {/* <button className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button> */}
                   {appoinment.status !== "Completed" && (
-                    <button  className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button>
+                    <button className="btn btn-sm btn-warning" onClick={() => navigate(`/admin/reschedule/${appoinment._id}`)}>Reschedule</button>
                   )}
                   <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
                 </td>

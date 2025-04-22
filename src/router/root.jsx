@@ -47,6 +47,9 @@ import StaffBloodbank from "../pages/staff/BloodbankList"
 import StaffPatients from "../pages/staff/PatientList"
 import StaffTaskLists from "../pages/staff/TaskList"
 import StaffAddPatients from "../pages/staff/AddPatient"
+import Messages from "../pages/admin/Messages"
+import AddAdmin from "../pages/admin/AddAdmin"
+import RequestSchedule from "../pages/patient/RequestSchedule"
 
 export const router = createBrowserRouter([
     {
@@ -79,7 +82,8 @@ export const router = createBrowserRouter([
             { path: "staff/bloodbanks", element: < StaffBloodbank/>},
             { path: "staff/patients", element: < StaffPatients/>},
             { path: "staff/tasks", element: < StaffTaskLists/>},
-            { path: "staff/addPatient", element: < StaffAddPatients />}          
+            { path: "staff/addPatient", element: < StaffAddPatients />},
+            { path: "patient/request/:id", element: <RequestSchedule />},          
         ]
     },
     {
@@ -105,7 +109,9 @@ export const router = createBrowserRouter([
             { path: "task", element: <StaffTasks />},
             { path: "addTask/:staffId",element: <AddTask />},
             { path: "editTask/:taskId",element: <UpdateTask />},
-            { path: "instruction", element: <Instructions />}
+            { path: "instruction", element: <Instructions />},
+            { path: "messages", element: <Messages />}, 
+            { path: "addAdmin", element: <AddAdmin />}, 
         ]
     }
 ]);

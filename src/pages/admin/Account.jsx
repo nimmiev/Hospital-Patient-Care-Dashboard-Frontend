@@ -15,32 +15,37 @@ const Account = () => {
 
     const [loading, setLoading] = useState(false);
     const [tab, setTab] = useState('view');
+    const [admins, setAdmins] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await axiosInstance.get("api/admin/profile", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-
-                setUser({
-                    name: response.data?.data?.name || "",
-                    email: response.data?.data?.email || "",
-                    phone: response.data?.data?.phone || "",
-                    image: response.data?.data?.profilepic || null,
-                    active: response.data?.data?.isActive || "",
-                });
-
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
-        };
-
         fetchProfile();
+        fetchAdmins();
     }, []);
+
+    const fetchProfile = async () => {
+        try {
+            const response = await axiosInstance.get("api/admin/profile", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            setUser({
+                name: response.data?.data?.name || "",
+                email: response.data?.data?.email || "",
+                phone: response.data?.data?.phone || "",
+                image: response.data?.data?.profilepic || null,
+                active: response.data?.data?.isActive || "",
+                isSuperAdmin: response.data?.data?.isSuperAdmin || "",
+            });
+
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -135,6 +140,28 @@ const Account = () => {
         return user.image || "https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg";
     };
 
+    const fetchAdmins = async () => {
+        try {
+            const response = await axiosInstance.get("api/admin/adminlist", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+            // console.log(response)
+            setAdmins(response.data.data);
+
+        } catch (error) {
+            console.error("Error fetching admins:", error);
+        }
+    };
+
+    // Pagination logic
+    const totalPages = Math.ceil(admins.length / itemsPerPage);
+    const paginatedData = admins.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     return (
         <div className="container mx-auto px-4 py-6">
             {/* Tabs */}
@@ -143,6 +170,11 @@ const Account = () => {
                     <button onClick={() => setTab('view')} className={`btn ${tab === 'view' && 'btn-active'}`}>Profile</button>
                     <button onClick={() => setTab('edit')} className={`btn ${tab === 'edit' && 'btn-active'}`}>Edit Profile</button>
                     <button onClick={() => setTab('password')} className={`btn ${tab === 'password' && 'btn-active'}`}>Change Password</button>
+                    {user.isSuperAdmin && (
+                        <button onClick={() => setTab('admin')} className={`btn ${tab === 'admin' && 'btn-active'}`}>
+                            Admin List
+                        </button>
+                    )}
                     <button onClick={() => navigate(-1)} className="btn btn-outline">← Back</button>
                 </div>
             </div>
@@ -191,6 +223,84 @@ const Account = () => {
                         <input type="password" name="confirmPassword" value={passwords.confirmPassword} onChange={handlePasswordChange} placeholder="Confirm Password" className="input input-bordered w-full mb-4" />
                         <button type="submit" className="btn btn-error w-full">Update Password</button>
                     </form>
+                </div>
+            )}
+
+            {/* Admin List */}
+            {tab === 'admin' && (
+                <div>
+                    <div className="flex justify-between items-center mb-4">
+                        <div></div>
+
+                        <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Admin List</h2>
+
+                        {/* Back navigating button */}
+                        <button type="button" className="btn btn-primary mb-4" onClick={() => navigate("/admin/addAdmin")}>+ Add Admin</button>
+
+                    </div>
+
+                    <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">
+                        <table className="table w-full">
+                            <thead className="bg-primary text-primary-content">
+                                <tr>
+                                    <th className="p-3">#</th>
+                                    <th className="p-3">Name</th>
+                                    <th className="p-3">Email</th>
+                                    <th className="p-3">phone</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-base-300">
+                                {paginatedData.length > 0 ? (
+                                    paginatedData.map((admin, index) => (
+                                        <tr
+                                            key={index}
+                                            className="hover:bg-base-200 transition duration-200"
+                                        >
+                                            <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                            <td className="p-3">{admin.name}</td>
+                                            <td className="p-3">{admin.email}</td>
+                                            <td className="p-3">{admin.phone}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="8" className="text-center py-4 text-gray-500">No messages found</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="flex justify-center mt-4">
+                        <div className="join">
+                            <button
+                                className="join-item btn"
+                                disabled={currentPage === 1}
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                            >
+                                «
+                            </button>
+
+                            {[...Array(totalPages)].map((_, index) => (
+                                <button
+                                    key={index + 1}
+                                    className={`join-item btn ${currentPage === index + 1 ? "btn-primary" : ""}`}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+
+                            <button
+                                className="join-item btn"
+                                disabled={currentPage === totalPages}
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                            >
+                                »
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 

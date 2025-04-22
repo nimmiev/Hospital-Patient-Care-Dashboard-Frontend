@@ -21,6 +21,7 @@ const AppoinmentList = () => {
     const fetchAppoinments = async () => {
         try {
           const response = await axiosInstance.get("/api/patient/appoinment-list");
+        //   console.log(response)
           setAppoinments(response.data.data);
           setIsScheduled(response.data.scheduled);
         } catch (error) {
@@ -71,7 +72,11 @@ const AppoinmentList = () => {
 
                 <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Appoinment List</h2>
 
-                <div></div>
+                <div>
+                    <button className="btn btn-primary" onClick={() => navigate(`/patient/request/${appoinments[0]?.patientId}`)}>
+                        Book New Appoinment
+                    </button>
+                </div>
             </div>
 
             {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}
@@ -108,7 +113,7 @@ const AppoinmentList = () => {
                                 <td className="p-3">{appoinment.doctorId.name}</td>
                                 <td className="p-3">{appoinment.consultationNotes}</td>
                                 <td className="p-3 flex space-x-2">
-                                    {/* <button className="btn btn-sm btn-warning" onClick={() />=> setRequestAppoinmentId(appoinment._id)} disabled={isScheduled}>Request</button> */}
+                                    {/* <button className="btn btn-sm btn-warning" onClick={() => setRequestAppoinmentId(appoinment._id)} disabled={isScheduled}>Request</button> */}
                                     <button className="btn btn-sm btn-error" onClick={() => setDeleteAppoinmentId(appoinment._id)}>Cancel</button>
                                 </td>
                             </tr>

@@ -16,16 +16,6 @@ const AppoinmentList = () => {
         fetchAppoinments();
     }, []);
 
-    // const fetchAppoinments = async () => {
-    //     try {
-    //         const response = await axiosInstance.get("/api/staff/appoinment");
-    //         //   console.log(response)
-    //         setAppoinments(response.data.data);
-    //     } catch (error) {
-    //         console.error("Error fetching Appoinment:", error);
-    //     }
-    // };
-
     // Pagination logic
     const fetchAppoinments = async () => {
         try {
