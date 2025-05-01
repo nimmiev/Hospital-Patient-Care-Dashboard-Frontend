@@ -18,7 +18,7 @@ const Messages = () => {
   const fetchMessages = async () => {
     try {
       const response = await axiosInstance.get("/api/admin/message");
-      console.log("Messages:", response);
+      // console.log("Messages:", response);
       setMessages(response.data.data);
     } catch (error) {
       console.error("Error fetching Messages:", error);

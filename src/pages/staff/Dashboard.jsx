@@ -23,7 +23,7 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log(response)
+        // console.log(response)
         setTask(response.data.data); // Assuming it's an array
       } catch (error) {
         console.error("Error fetching Task:", error);
@@ -141,29 +141,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
-        {/* Right side - Two cards stacked horizontally with same height as left */}
-        {/* <div className="flex gap-6 items-stretch">
-          <div className="card w-1/2 shadow-xl bg-base-100 border border-gray-200 self-stretch">
-            <div className="card-body text-center flex flex-col justify-center h-full">
-              <h2 className="text-lg font-semibold text-gray-600">Appointments</h2>
-              <p className="text-5xl font-bold text-primary">{appointmentCount}</p>
-              <div className="mt-2">
-                <span className="badge badge-outline badge-primary">Total Appointments</span>
-              </div>
-            </div>
-          </div>
-          <div className="card w-1/2 shadow-xl bg-base-100 border border-gray-200 self-stretch">
-            <div className="card-body text-center flex flex-col justify-center h-full">
-              <h2 className="text-lg font-semibold text-gray-600">Tasks</h2>
-              <p className="text-5xl font-bold text-primary">{appointmentCount}</p>
-              <div className="mt-2">
-                <span className="badge badge-outline badge-primary">Total Task</span>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
         <div className="flex gap-6 items-stretch">
           <div className="card w-1/2 shadow-xl bg-base-100 border border-gray-200 self-stretch">
             <div className="card-body text-center flex flex-col justify-center h-full">

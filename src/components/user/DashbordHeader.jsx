@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useUserData } from "../../hooks/useUserData";
 import { axiosInstance } from "../../config/axiosInstance";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 const DashbordHeader = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const { userData, loading } = useUserData();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -72,16 +75,79 @@ const DashbordHeader = () => {
       </div>
 
       {menuOpen && (
-        <div className="lg:hidden bg-white shadow-md">
-          <nav className="flex flex-col space-y-4 py-4 text-center">
-            <Link to="/dashboard" className="py-2 text-gray-700 hover:bg-gray-200 transition" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-            <Link to="/appointments" className="py-2 text-gray-700 hover:bg-gray-200 transition" onClick={() => setMenuOpen(false)}>Appointments</Link>
-            <Link to="/profile" className="py-2 text-gray-700 hover:bg-gray-200 transition" onClick={() => setMenuOpen(false)}>Profile</Link>
-            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="py-2 text-red-600 hover:bg-gray-200 transition">
-              Logout
-            </button>
-          </nav>
-        </div>
+<div className="lg:hidden bg-base-100 shadow-md text-base-content">
+  <nav className="flex flex-col py-4 px-6 space-y-1 text-left">
+
+    <Link to="/" className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+      Home
+    </Link>
+    <Link to="/about" className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+      About
+    </Link>
+    <Link to="/contact" className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+      Contact
+    </Link>
+
+    {userData && userData.role && (
+      <>
+        <hr className="my-3 border-base-content/20" />
+        
+        <Link to={`/${userData.role.toLowerCase()}/profile`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+          Profile
+        </Link>
+        <Link to={`/${userData.role.toLowerCase()}/appoinments`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+          Appointments
+        </Link>
+
+        {userData.role.toLowerCase() !== "doctor" && (
+          <Link to={`/${userData.role.toLowerCase()}/bloodbanks`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+            Bloodbanks
+          </Link>
+        )}
+
+        {(userData.role.toLowerCase() === "doctor" || userData.role.toLowerCase() === "staff") && (
+          <Link to={`/${userData.role.toLowerCase()}/patients`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+            Patients
+          </Link>
+        )}
+
+        {(userData.role.toLowerCase() !== "doctor" && userData.role.toLowerCase() !== "patient") && (
+          <Link to={`/${userData.role.toLowerCase()}/tasks`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+            Tasks
+          </Link>
+        )}
+
+        <Link to={`/${userData.role.toLowerCase()}/settings`} className="py-2 px-2 rounded hover:bg-base-200 transition" onClick={() => setMenuOpen(false)}>
+          Settings
+        </Link>
+      </>
+    )}
+
+    <div className="pt-4">
+      <button
+        onClick={() => {
+          toggleTheme();
+          setMenuOpen(false);
+        }}
+        className="flex items-center gap-2 py-2 px-2 rounded hover:bg-primary hover:text-primary-content transition"
+        title="Toggle Theme"
+      >
+        {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+        <span>Toggle Theme</span>
+      </button>
+    </div>
+
+    <button
+      onClick={() => {
+        handleLogout();
+        setMenuOpen(false);
+      }}
+      className="py-2 px-2 rounded text-error hover:bg-base-200 transition"
+    >
+      Logout
+    </button>
+  </nav>
+</div>
       )}
     </header>
   );

@@ -12,6 +12,7 @@ export const useUserData = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/api/${role}/me`);
+        // console.log(res.data.data)
         setUserData(res.data.data);
       } catch (error) {
         console.error("User fetch failed", error);

@@ -21,12 +21,12 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-64 h-full flex flex-col justify-between p-4 transition-all duration-300 ${
-        theme === "dark"
+      className={`hidden lg:flex w-64 h-full flex-col justify-between p-4 transition-all duration-300 ${theme === "dark"
           ? "bg-gray-900 text-white"
           : "bg-white text-gray-900 border-r border-gray-200"
-      }`}
+        }`}
     >
+
       {/* Top Section */}
       <div className="flex flex-col gap-6">
         {/* User Info */}

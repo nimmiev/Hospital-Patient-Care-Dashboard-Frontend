@@ -32,7 +32,7 @@ const BloodbankList = () => {
 
     try {
       const response = await axiosInstance.get(
-          `/api/patient/search-bloodbank?bloodgroup=${searchQuery}`
+        `/api/patient/search-bloodbank?bloodgroup=${searchQuery}`
       );
       setBloodbanks(response.data.data);
       setCurrentPage(1);
@@ -51,15 +51,15 @@ const BloodbankList = () => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="btn btn-secondary"
+          className="btn btn-secondary mb-2 md:mb-0"
         >
           ← Back
         </button>
-        <h2 className="text-2xl font-semibold text-primary text-center w-full">
+        <h2 className="text-2xl font-semibold text-primary text-center w-full mb-2 md:mb-0">
           Bloodbank List
         </h2>
         <div className="flex gap-2 w-full md:w-auto justify-end">
@@ -78,7 +78,7 @@ const BloodbankList = () => {
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">
-        <table className="table w-full">
+        <table className="table w-full min-w-full">
           <thead className="bg-primary text-primary-content">
             <tr>
               <th className="p-3">#</th>
@@ -129,9 +129,8 @@ const BloodbankList = () => {
           {[...Array(totalPages)].map((_, index) => (
             <button
               key={index}
-              className={`join-item btn ${
-                currentPage === index + 1 ? "btn-primary" : ""
-              }`}
+              className={`join-item btn ${currentPage === index + 1 ? "btn-primary" : ""
+                }`}
               onClick={() => setCurrentPage(index + 1)}
             >
               {index + 1}
@@ -149,6 +148,8 @@ const BloodbankList = () => {
 
       <ToastContainer />
     </div>
+
+
   );
 };
 

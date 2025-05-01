@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
+import { useTheme } from "../../components/context/ThemeContext";
 
 const PatientDetails = () => {
-  const { id } = useParams(); // Get patient ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchPatientDetails = async () => {
       try {
         const response = await axiosInstance.get(`/api/admin/patient/${id}`);
-        console.log(response.data.data);
         setPatient(response.data.data);
       } catch (error) {
         console.error("Error fetching patient details:", error);
@@ -32,29 +33,32 @@ const PatientDetails = () => {
   }
 
   return (
-    <div className="p-6">
+    <div data-theme={theme} className="min-h-screen p-6 bg-base-200 text-base-content">
       <button onClick={() => navigate(-1)} className="btn btn-secondary mb-4">← Back</button>
 
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <div className="max-w-4xl mx-auto bg-base-100 shadow-lg rounded-lg p-6">
         {/* Profile Section */}
         <div className="text-center">
-          <img 
-            src={patient.profilepic} 
-            onError={(e) => { e.target.onerror = null; e.target.src = "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?t=st=1742623449~exp=1742627049~hmac=3bb4b47fbe4a2fe8f6a3b06ae7708f672a14c262d9290750d8205209a9252ed9&w=740"; }} 
+          <img
+            src={patient.profilepic}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg";
+            }}
             alt="Patient Profile"
             className="w-24 h-24 rounded-full mx-auto mb-3"
           />
           <h2 className="text-2xl font-bold">{patient.name}</h2>
-          <p className="text-gray-500">{patient.email}</p>
-          <p className="text-gray-500">{patient.phone}</p>
+          <p className="text-sm opacity-70">{patient.email}</p>
+          <p className="text-sm opacity-70">{patient.phone}</p>
         </div>
 
         <div className="divider"></div>
 
         {/* Details Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Personal Information */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          {/* Personal Info */}
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Personal Information</h3>
             <p><strong>DOB:</strong> {new Date(patient.dateOfBirth).toLocaleDateString()}</p>
             <p><strong>Gender:</strong> {patient.gender}</p>
@@ -62,7 +66,7 @@ const PatientDetails = () => {
           </div>
 
           {/* Medical History */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Medical History</h3>
             <p><strong>Blood Type:</strong> {patient.bloodType}</p>
             <p><strong>Height:</strong> {patient.height} cm</p>
@@ -75,7 +79,7 @@ const PatientDetails = () => {
           </div>
 
           {/* Lifestyle */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Lifestyle</h3>
             <p><strong>Smoking:</strong> {patient.smoking ? "Yes" : "No"}</p>
             <p><strong>Alcohol Consumption:</strong> {patient.alcoholConsumption ? "Yes" : "No"}</p>
@@ -84,8 +88,8 @@ const PatientDetails = () => {
             <p><strong>Sleep Patterns:</strong> {patient.sleepPatterns}</p>
           </div>
 
-          {/* Emergency Information */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          {/* Emergency Info */}
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Emergency Information</h3>
             <p><strong>Emergency Contact:</strong> {patient.emergencyContact?.name} ({patient.emergencyContact?.phone})</p>
             <p><strong>Preferred Hospital:</strong> {patient.emergencyPreferences?.preferredHospital}</p>
@@ -94,7 +98,7 @@ const PatientDetails = () => {
           </div>
 
           {/* Insurance */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Insurance</h3>
             <p><strong>Provider:</strong> {patient.insurance?.provider}</p>
             <p><strong>Policy Number:</strong> {patient.insurance?.policyNumber}</p>
@@ -102,7 +106,7 @@ const PatientDetails = () => {
           </div>
 
           {/* Family History */}
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-base-300 p-4 rounded-lg">
             <h3 className="font-semibold text-primary">Family History</h3>
             {patient.familyHistory?.length > 0 ? (
               <ul className="list-disc list-inside">

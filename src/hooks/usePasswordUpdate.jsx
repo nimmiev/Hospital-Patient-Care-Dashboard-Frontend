@@ -9,6 +9,7 @@ export const usePasswordUpdate = () => {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const [ploading, setLoading] = useState(false);
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -29,13 +30,17 @@ export const usePasswordUpdate = () => {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (!validatePassword()) return;
-
+    if (ploading) return;
     try {
+      setLoading(true);
+
       await axiosInstance.put("/api/patient/profile/password", passwordData);
       toast("Password updated successfully");
       setPasswordData({ password: "", confirmPassword: "" });
     } catch {
       toast("Failed to update password");
+    }   finally {
+      setLoading(false); // stop loading
     }
   };
 
@@ -44,5 +49,6 @@ export const usePasswordUpdate = () => {
     handlePasswordChange,
     handlePasswordSubmit,
     errors,
+    ploading
   };
 };

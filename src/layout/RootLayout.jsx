@@ -14,6 +14,10 @@ const RootLayout = () => {
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
 
+  // console.log(location.pathname);
+  const noScrollPaths = ["/", "/about", "/contact"];
+  const shouldScroll = !noScrollPaths.includes(location.pathname);
+
   // Show Sidebar only for exact dashboard paths
   // const showSidebar = ["/patient", "/staff", "/doctor", "/patient/profile", "/patient/settings",
   //   "/patient/appoinments", "/patient/bloodbanks", "/doctor/profile", "/doctor/settings", "/doctor/appoinments", "/doctor/patients"].includes(location.pathname);
@@ -28,15 +32,15 @@ const RootLayout = () => {
       {isDashboardUser && !isAuthPage ? <DashbordHeader /> : <Header />}
 
       {/* Main content area with sidebar and content */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-x-hidden">
         {showSidebar && (
-          <div className="w-64 bg-gray-100">
+          <div className="hidden lg:block w-64 bg-gray-100">
             <Sidebar />
           </div>
         )}
 
         {/* Main outlet area */}
-        <main className="flex-1">
+        <main className={`flex-1 ${shouldScroll ? 'overflow-x-scroll' : ''}`}>
           <Outlet />
         </main>
       </div>

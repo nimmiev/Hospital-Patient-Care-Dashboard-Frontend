@@ -89,27 +89,29 @@ const Profile = () => {
                 { label: "Pre-existing Conditions", value: patient.preExistingConditions?.length ? patient.preExistingConditions.join(", ") : "N/A" },
                 { label: "Past Surgeries", value: patient.pastSurgeries?.length ? patient.pastSurgeries.join(", ") : "N/A" },
                 { label: "Chronic Diseases", value: patient.chronicDiseases?.length ? patient.chronicDiseases.join(", ") : "N/A" },
-                { label: "Family History", value: patient.familyHistory?.length ? patient.familyHistory.join(", ") : "N/A" },
+                // { label: "Family History", value: patient.familyHistory?.length ? patient.familyHistory.join(", ") : "N/A" },
                 {
-                    label: "Insurance",
-                    value: Object.keys(patient.insurance).length ? JSON.stringify(patient.insurance) : "Not Provided"
+                  label: "Family History",
+                  value: patient.familyHistory?.length
+                    ? patient.familyHistory.map(item => `${item.condition} (${item.relation})`).join(", ")
+                    : "N/A"
                 },
-                // {
-                //     label: "Family History",
-                //     value:
-                //     typeof patient.familyHistory === "object" && patient.familyHistory !== null
-                //         ? JSON.stringify(patient.familyHistory)
-                //         : patient.familyHistory
-                // },
+                {
+                  label: "Insurance",
+                  value: patient.insurance && Object.keys(patient.insurance).length
+                    ? `${patient.insurance.provider} - Policy #${patient.insurance.policyNumber} (Expires: ${new Date(patient.insurance.expirationDate).toLocaleDateString()})`
+                    : "Not Provided"
+                },
                 { label: "Diet Preference", value: patient.dietPreference },
                 { label: "Physical Activity Level", value: patient.physicalActivityLevel },
                 { label: "Sleep Patterns", value: patient.sleepPatterns },
                 {
-                    label: "Emergency Preferences",
-                    value: patient.emergencyPreferences && typeof patient.emergencyPreferences === "object"
-                    ? `Do Not Resuscitate: ${patient.emergencyPreferences.doNotResuscitate ? "Yes" : "No"}`
-                    : "N/A"
-                }  
+                  label: "Emergency Preferences",
+                  value:
+                    patient.emergencyPreferences && typeof patient.emergencyPreferences === "object"
+                      ? `Do Not Resuscitate: ${patient.emergencyPreferences.doNotResuscitate ? "Yes" : "No"}, Preferred Hospital: ${patient.emergencyPreferences.preferredHospital}, Primary Care Physician: ${patient.emergencyPreferences.primaryCarePhysician}`
+                      : "N/A"
+                }                
             ].map((item, idx) => (
             <div key={idx}>
                 <p className="text-gray-500 font-medium">{item.label}</p>

@@ -38,7 +38,7 @@ export default function Settings() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                    <h3 className="col-span-1 md:col-span-2 text-lg font-semibold text-info">Basic Information</h3>
+                    <h3 className="col-span-2 text-lg font-semibold text-info">Basic Information</h3>
 
                     <div className="flex flex-col">
                         <label className="font-medium text-base-content">Full Name</label>
@@ -60,7 +60,7 @@ export default function Settings() {
                         <input name="dateOfBirth" type="date" className="input input-bordered w-full" value={formatDate(formData.dateOfBirth)} onChange={handleChange} />
                     </div>
 
-                    <div className="col-span-1 md:col-span-2">
+                    <div className="col-span-1">
                         <label className="font-medium text-base-content">Gender</label>
                         <div className="flex space-x-4 mt-1">
                             {["Male", "Female", "Other"].map((g) => (
@@ -73,8 +73,8 @@ export default function Settings() {
                         {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
                     </div>
 
-                    {/* Profile picture */}
-                    <div className="col-span-1 md:col-span-2 flex flex-col">
+                    {/* profile picture */}
+                    <div className="col-span-1 flex flex-col">
                         <label className="font-medium text-base-content">Profile Picture</label>
                         <input type="file" accept="image/*" onChange={handleImageChange} className="file-input file-input-bordered w-full" />
                         {formData.imageUrl && (
@@ -89,7 +89,7 @@ export default function Settings() {
                         <textarea name="address" placeholder="Address" className="textarea textarea-bordered w-full" value={formData.address || ""} onChange={handleChange} />
                     </div>
 
-                    {/* Insurance details */}
+                    {/* insurance details */}
                     <div className="flex flex-col">
                         <label className="font-medium text-base-content">Insurance Provider</label>
                         <input name="insurance.provider" type="text" placeholder="Insurance Provider" className="input input-bordered w-full" value={formData.insurance?.provider || ""} onChange={handleChange} />
@@ -105,7 +105,7 @@ export default function Settings() {
                         <input name="insurance.expirationDate" type="date" className="input input-bordered w-full" value={formData.insurance?.expirationDate ? formatDate(formData.insurance.expirationDate) : ""} onChange={handleChange} />
                     </div>
 
-                    <h3 className="col-span-1 md:col-span-2 text-lg font-semibold text-info">Emergency Contact</h3>
+                    <h3 className="col-span-2 text-lg font-semibold text-info">Emergency Contact</h3>
 
                     <div className="flex flex-col">
                         <label className="font-medium text-base-content">Contact Name</label>
@@ -117,7 +117,7 @@ export default function Settings() {
                         <input name="emergencyContact.phone" placeholder="Contact Phone" maxLength="10" className="input input-bordered w-full" value={formData.emergencyContact?.phone || ""} onChange={handleChange} />
                     </div>
 
-                    <h3 className="col-span-1 md:col-span-2 text-lg font-semibold text-info">Medical History & Lifestyle</h3>
+                    <h3 className="col-span-2 text-lg font-semibold text-info">Medical History & Lifestyle</h3>
 
                     <div className="flex flex-col">
                         <label className="font-medium text-base-content">Blood Type</label>
@@ -194,7 +194,7 @@ export default function Settings() {
                         <textarea name="chronicDiseases" placeholder="Chronic Diseases (comma separated)" className="textarea textarea-bordered w-full" value={formData.chronicDiseases?.join(", ") || ""} onChange={(e) => setFormData({ ...formData, chronicDiseases: e.target.value.split(",").map(item => item.trim()) })} />
                     </div>
 
-                    {/* Lifestyle habits checkbox */}
+                    {/* life style habits checkbox */}
                     <div className="flex flex-col">
                         <label className="font-medium text-base-content mb-2">Lifestyle Habits</label>
                         <label className="flex items-center space-x-2 text-base-content">
@@ -207,100 +207,65 @@ export default function Settings() {
                         </label>
                     </div>
 
-{/* Family History */}
-<h3 className="col-span-full text-lg font-semibold text-info">Family History</h3>
+                    <h3 className="col-span-2 text-lg font-semibold text-info">Family History</h3>
 
-{formData.familyHistory.length === 0 && (
-    <button
-        type="button"
-        onClick={handleAddFamilyHistory}
-        className="btn btn-primary btn-sm mt-4 col-span-full"
-    >
-        Add Family History
-    </button>
-)}
+                    {/* Check if familyHistory is empty and display the "Add Family History" button */}
+                    {formData.familyHistory.length === 0 && (
+                        <button
+                            type="button"
+                            onClick={handleAddFamilyHistory}
+                            className="btn btn-primary btn-sm mt-4 col-span-2"
+                        >
+                            Add Family History
+                        </button>
+                    )}
 
-<div className="grid grid-cols-1 md:grid-cols-2 col-span-full gap-4">
-    {Array.isArray(formData.familyHistory) && formData.familyHistory.map((item, index) => (
-        <div key={index} className="grid grid-cols-4 gap-2 md:grid-cols-8 items-center">
-            <input
-                type="text"
-                name={`familyHistory.${index}.condition`}
-                placeholder="Disease (e.g., Diabetes)"
-                className="input input-bordered col-span-4 md:col-span-3"
-                value={item.condition || ""}
-                onChange={handleChange}
-            />
-            <input
-                type="text"
-                name={`familyHistory.${index}.relation`}
-                placeholder="Relation (e.g., Father)"
-                className="input input-bordered col-span-4 md:col-span-3"
-                value={item.relation || ""}
-                onChange={handleChange}
-            />
-            <button
-                type="button"
-                onClick={() => handleAddFamilyHistory(index)}
-                className="btn btn-primary btn-sm col-span-2 md:col-span-1"
-            >
-                +
-            </button>
-            <button
-                type="button"
-                onClick={() => handleRemoveFamilyHistory(index)}
-                className="btn btn-error btn-sm col-span-2 md:col-span-1"
-            >
-                -
-            </button>
-        </div>
-    ))}
-</div>
+                    {/* Family History Rows */}
+                    <div className="grid grid-cols-1 col-span-2 gap-4">
+                        {Array.isArray(formData.familyHistory) && formData.familyHistory.map((item, index) => (
+                            <div key={index} className="grid grid-cols-8 gap-4 items-center">
+                                <input type="text" name={`familyHistory.${index}.condition`} placeholder="Disease (e.g., Diabetes)"
+                                    className="input input-bordered w-full col-span-3" value={item.condition || ""} onChange={handleChange} />
+                                <input type="text" name={`familyHistory.${index}.relation`} placeholder="Relation (e.g., Father)"
+                                    className="input input-bordered w-full col-span-3" value={item.relation || ""} onChange={handleChange} />
+                                <button type="button" onClick={handleAddFamilyHistory} className="btn btn-primary btn-sm w-full col-span-1" >+</button>
+                                <button type="button" onClick={() => handleRemoveFamilyHistory(index)} className="btn btn-error btn-sm w-full col-span-1" >-</button>
+                            </div>
+                        ))}
+                    </div>
 
-{/* Emergency Preferences */}
-<h3 className="col-span-full text-lg font-semibold text-info">Emergency Preferences</h3>
+                    <h3 className="col-span-2 text-lg font-semibold text-info">Emergency Preferences</h3>
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
-    <div className="flex flex-col">
-        <label className="font-medium text-base-content">Preferred Hospital</label>
-        <input
-            name="emergencyPreferences.preferredHospital"
-            type="text"
-            placeholder="Preferred Hospital"
-            className="input input-bordered w-full"
-            value={formData.emergencyPreferences?.preferredHospital || ""}
-            onChange={handleChange}
-        />
-    </div>
+                    <div className="flex flex-col">
+                        <label className="font-medium text-base-content">Preferred Hospital</label>
+                        <input name="emergencyPreferences.preferredHospital" type="text" placeholder="Preferred Hospital" className="input input-bordered w-full" value={formData.emergencyPreferences?.preferredHospital || ""} onChange={handleChange} />
+                    </div>
 
-    <div className="flex flex-col">
-        <label className="font-medium text-base-content">Primary Care Physician</label>
-        <input
-            name="emergencyPreferences.primaryCarePhysician"
-            type="text"
-            placeholder="Primary Care Physician"
-            className="input input-bordered w-full"
-            value={formData.emergencyPreferences?.primaryCarePhysician || ""}
-            onChange={handleChange}
-        />
-    </div>
+                    <div className="flex flex-col">
+                        <label className="font-medium text-base-content">Primary Care Physician</label>
+                        <input name="emergencyPreferences.primaryCarePhysician" type="text" placeholder="Primary Care Physician" className="input input-bordered w-full" value={formData.emergencyPreferences?.primaryCarePhysician || ""} onChange={handleChange} />
+                    </div>
 
-    <div className="flex items-center space-x-2 md:col-span-2">
-        <input
-            type="checkbox"
-            name="emergencyPreferences.doNotResuscitate"
-            checked={formData.emergencyPreferences?.doNotResuscitate || false}
-            onChange={handleCheckboxChange}
-        />
-        <span className="text-base-content">Do Not Resuscitate</span>
-    </div>
-</div>
+                    <div className="flex flex-col">
+                        <label className="flex items-center space-x-2 text-base-content">
+                            <input type="checkbox" name="emergencyPreferences.doNotResuscitate" checked={formData.emergencyPreferences?.doNotResuscitate || false} onChange={handleCheckboxChange} />
+                            <span>doNotResuscitate</span>
+                        </label>
+                    </div>
 
+                    {message && <p className="text-green-500 col-span-2">{message}</p>}
 
-                </div>
+                    {/* Submit Button */}
+                    <div className="col-span-2">
+                        <button type="submit" className="btn btn-primary w-full" disabled={loading}>{loading ? 'Updating...' : 'Update Profile'}</button>
+                    </div>
 
-                <div className="form-control mt-6">
-                    <button type="submit" className="btn btn-primary">Update Profile</button>
+                    {/* Show Form Errors */}
+                    {errors.general && (
+                        <p className="text-red-500 text-center mt-2">{errors.general}</p>
+                    )}
+
+                    <ToastContainer />
                 </div>
             </form>
 

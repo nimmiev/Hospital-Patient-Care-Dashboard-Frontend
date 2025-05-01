@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUserData } from "../../hooks/useUserData";
 
 const AppoinmentList = () => {
 
@@ -10,6 +11,7 @@ const AppoinmentList = () => {
     const [RequestAppoinmentId, setRequestAppoinmentId] = useState();
     const [isScheduled, setIsScheduled] = useState(false);
     const [deleteAppoinmentId, setDeleteAppoinmentId] = useState(null);
+    const { userData } = useUserData();
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const navigate = useNavigate();
@@ -20,14 +22,14 @@ const AppoinmentList = () => {
 
     const fetchAppoinments = async () => {
         try {
-          const response = await axiosInstance.get("/api/patient/appoinment-list");
-        //   console.log(response)
-          setAppoinments(response.data.data);
-          setIsScheduled(response.data.scheduled);
+            const response = await axiosInstance.get("/api/patient/appoinment-list");
+            //   console.log(response)
+            setAppoinments(response.data.data);
+            setIsScheduled(response.data.scheduled);
         } catch (error) {
-          console.error("Error fetching Appoinment:", error);
+            console.error("Error fetching Appoinment:", error);
         }
-      };
+    };
 
     const requestAppointment = async () => {
         try {
@@ -61,23 +63,33 @@ const AppoinmentList = () => {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-
     // console.log(appoinments)
 
     return (
         <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
                 {/* Back navigating button */}
-                <button type="radio" onClick={() => navigate(-1)} name="my_tabs_6" className="btn btn-secondary mb-4" >← Back</button>
+                <button
+                    type="radio"
+                    onClick={() => navigate(-1)}
+                    name="my_tabs_6"
+                    className="btn btn-secondary w-full md:w-auto"
+                >
+                    ← Back
+                </button>
 
-                <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Appoinment List</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-center text-primary">
+                    Appointment List
+                </h2>
 
-                <div>
-                    <button className="btn btn-primary" onClick={() => navigate(`/patient/request/${appoinments[0]?.patientId}`)}>
-                        Book New Appoinment
-                    </button>
-                </div>
+                <button
+                    className="btn btn-primary w-full md:w-auto"
+                    onClick={() => navigate(`/patient/request/${userData?._id}`)}
+                >
+                    Book New Appointment
+                </button>
             </div>
+
 
             {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}
             <div className="overflow-x-auto rounded-lg border border-base-content/10 bg-base-100 shadow-lg">

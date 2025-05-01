@@ -17,17 +17,12 @@ export const usePatientProfileForm = () => {
     smoking: false,
     alcoholConsumption: false,
     imageUrl: "",
-    familyHistory: [],
-    emergencyPreferences: { 
-      preferredHospital: "",
-      primaryCarePhysician: "", 
-      doNotResuscitate: false },
+    familyHistory: [], // Initializing familyHistory here
   });
 
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -44,19 +39,59 @@ export const usePatientProfileForm = () => {
     fetchProfile();
   }, []);
 
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+
+  //   if (name.includes('.')) {
+  //     const [parentKey, childKey] = name.split('.');
+
+  //     if (parentKey === 'familyHistory') {
+  //       const index = Number(childKey);
+  //       const field = name.split('.')[2];
+
+  //       setFormData((prev) => {
+  //         const updatedFamilyHistory = [...(prev.familyHistory || [])];
+  //         updatedFamilyHistory[index] = {
+  //           ...updatedFamilyHistory[index],
+  //           [field]: value,
+  //         };
+  //         return { ...prev, familyHistory: updatedFamilyHistory };
+  //       });
+  //     } else {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         [parentKey]: {
+  //           ...prev[parentKey],
+  //           [childKey]: value,
+  //         },
+  //       }));
+  //     }
+  //   } else {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
   
     if (name.includes('.')) {
-      const [parentKey, field] = name.split('.');
+      const [parentKey, index, field] = name.split('.');
   
-      setFormData((prev) => ({
-        ...prev,
-        [parentKey]: {
-          ...prev[parentKey],
-          [field]: value,
-        },
-      }));
+      if (parentKey === 'familyHistory') {
+        const idx = Number(index); // Get the index of the familyHistory item
+  
+        setFormData((prev) => {
+          const updatedFamilyHistory = [...(prev.familyHistory || [])];
+          updatedFamilyHistory[idx] = {
+            ...updatedFamilyHistory[idx], // Spread the existing object
+            [field]: value, // Update the specific field (condition or relation)
+          };
+          return { ...prev, familyHistory: updatedFamilyHistory };
+        });
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -67,22 +102,9 @@ export const usePatientProfileForm = () => {
   
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-  
-    if (name.includes('.')) {
-      const [parentKey, field] = name.split('.');
-  
-      setFormData((prev) => ({
-        ...prev,
-        [parentKey]: {
-          ...prev[parentKey],
-          [field]: checked,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
-  
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -102,15 +124,16 @@ export const usePatientProfileForm = () => {
     setFormData((prev) => ({ ...prev, imageUrl: imagePreviewUrl })); // Preview only
   };
 
-  const handleAddFamilyHistory = (index) => {
-    setFormData((prev) => {
-      const newEntry = { condition: "", relation: "" };
-      const updated = [...(Array.isArray(prev.familyHistory) ? prev.familyHistory : [])];
-      updated.splice(index + 1, 0, newEntry); // Insert after the current index
-      return { ...prev, familyHistory: updated };
-    });
+  const handleAddFamilyHistory = () => {
+    setFormData((prev) => ({
+      ...prev,
+      familyHistory: [
+        ...(Array.isArray(prev.familyHistory) ? prev.familyHistory : []),
+        { disease: "", relation: "" },
+      ],
+    }));
   };
-  
+
   const handleRemoveFamilyHistory = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -136,11 +159,37 @@ export const usePatientProfileForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!validate()) return;
+
+  //   const form = new FormData();
+  //   for (let key in formData) {
+  //     if (typeof formData[key] === "object" && formData[key] !== null) {
+  //       form.append(key, JSON.stringify(formData[key]));
+  //     } else {
+  //       form.append(key, formData[key]);
+  //     }
+  //   }
+
+  //   if (selectedImageFile) {
+  //     form.append("profilepic", selectedImageFile);
+  //   }
+
+  //   try {
+  //     const res = await axiosInstance.put("/api/patient/profile/update", form, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     toast("Profile updated successfully!");
+  //     setMessage("Profile updated successfully!");
+  //   } catch (error) {
+  //     toast("Failed to update profile");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
-    if (loading) return;
   
     const form = new FormData();
   
@@ -160,9 +209,6 @@ export const usePatientProfileForm = () => {
     }
   
     try {
-
-      setLoading(true);
-
       // Make the PUT request with FormData
       const res = await axiosInstance.put("/api/patient/profile/update", form, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -183,8 +229,6 @@ export const usePatientProfileForm = () => {
         // If there's no response, show a generic message
         toast("Failed to update profile");
       }
-    }  finally {
-      setLoading(false); // stop loading
     }
   };
   
@@ -199,6 +243,5 @@ export const usePatientProfileForm = () => {
     handleRemoveFamilyHistory,
     errors,
     message,
-    loading,
   };
 };

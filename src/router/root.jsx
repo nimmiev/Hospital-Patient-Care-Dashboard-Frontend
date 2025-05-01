@@ -31,7 +31,7 @@ import StaffTasks from "../pages/admin/StaffTaskList"
 import AddTask from "../pages/admin/AddTask"
 import UpdateTask from "../pages/admin/UpdateTask"
 import PatientProfile from "../pages/patient/Profile"
-import PatientStetting from "../pages/patient/Settings"
+import PatientSetting from "../pages/patient/Settings"
 import PatientAppoinment from "../pages/patient/AppoinmentList"
 import PatientBloodbank from "../pages/patient/BloodbankList"
 import DoctorProfile from "../pages/doctor/Profile"
@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
             { path: "staff", element: <StaffDashboard />},
             { path: "doctor", element: <DoctorDashboard />},
             { path: "patient/profile", element: < PatientProfile/>},
-            { path: "patient/settings", element: < PatientStetting/>},
+            { path: "patient/settings", element: < PatientSetting/>},
             { path: "patient/appoinments", element: < PatientAppoinment/>},
             { path: "patient/bloodbanks", element: < PatientBloodbank/>},
             { path: "doctor/profile", element: < DoctorProfile/>},
